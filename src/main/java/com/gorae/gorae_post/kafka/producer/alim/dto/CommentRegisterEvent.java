@@ -16,7 +16,6 @@ public class CommentRegisterEvent {
     private String action;
 
     private String userId;
-    private String postId;
     private String postTitle;
     private String comment;
 

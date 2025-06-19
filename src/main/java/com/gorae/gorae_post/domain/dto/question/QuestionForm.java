@@ -17,6 +17,10 @@ public class QuestionForm {
     @NotEmpty(message = "내용은 필수항목 입니다.")
     private String content;
 
+    private String userName;
+
+    private String profileImgUrl;
+
     public Question toEntity(String userId) {
         Question question = new Question();
         question.setQuestionTitle(this.title);

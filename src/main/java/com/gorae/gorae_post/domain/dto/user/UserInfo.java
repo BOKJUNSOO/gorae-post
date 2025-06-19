@@ -7,15 +7,18 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-public class User {
+public class UserInfo {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String id;
+    @Column(name="user_id")
+    private String userId;
 
-    @Column(name="username")
+    @Column(name="user_name")
     private String userName;
 
     @Column(name="profile_img_url")
     private String profileImgUrl;
+
+    @Column(name="user_badge",nullable = true)
+    private String userBadge;
 }

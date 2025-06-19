@@ -25,7 +25,9 @@ public class QuestionController {
     public ApiResponseDto<String> createQuestion (@RequestBody @Valid QuestionForm questionForm) {
         // TODO : JWT 로부터 userId 파싱
         String userId = "bok";
+        // TODO : S3 에 이미지 적재 하는 로직 추가
         questionService.create(questionForm,userId);
+        // TODO : User 서비스가 구독하는 question-create topic 에 메세지 발행
         return ApiResponseDto.createOk(userId);
     }
 

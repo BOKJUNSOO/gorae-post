@@ -18,14 +18,14 @@ public class Comment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column
+    private Integer questionId; // FK question.id
+
     @Column(columnDefinition = "TEXT")
     private String commentContent;
 
     @Column
-    private Integer questionId; // FK question.id
-
-    @Column
-    private Integer userId;
+    private String userId;
 
     @Column
     private LocalDateTime createAt;
