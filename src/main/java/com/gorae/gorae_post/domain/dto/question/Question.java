@@ -1,6 +1,7 @@
-package com.gorae.gorae_post.domain.dto;
+package com.gorae.gorae_post.domain.dto.question;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.gorae.gorae_post.domain.dto.comment.Comment;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,17 +18,14 @@ public class Question {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name="title", nullable = false)
-    private String postTitle;
+    @Column(name="question_title", nullable = false)
+    private String questionTitle;
 
-    @Column(columnDefinition = "TEXT",name="post_content",nullable = false)
-    private String postContent;
+    @Column(columnDefinition = "TEXT",name="question_content",nullable = false)
+    private String questionContent;
 
     @Column(name="user_id",nullable = false)
     private String userId; // JWT 추출
-
-    @Column
-    private LocalDateTime createAt;
 
     @Column
     private LocalDateTime updateAt;
@@ -37,5 +35,5 @@ public class Question {
 
     @JsonIgnore
     @OneToMany(mappedBy = "question", cascade = CascadeType.REMOVE)
-    private List<Answer> answerList;
+    private List<Comment> commentList;
 }

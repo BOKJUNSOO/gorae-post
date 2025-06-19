@@ -1,7 +1,8 @@
-package com.gorae.gorae_post.domain.dto;
+package com.gorae.gorae_post.domain.dto.comment;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.gorae.gorae_post.domain.dto.question.Question;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,7 +12,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Entity
-public class Answer {
+public class Comment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,5 +36,4 @@ public class Answer {
     @JsonIgnore
     @ManyToOne
     private Question question;
-
 }

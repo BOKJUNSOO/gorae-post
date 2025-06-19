@@ -1,4 +1,4 @@
 package com.gorae.gorae_post.service;
 
-public class PostService {
+public class CommentService {
 }
