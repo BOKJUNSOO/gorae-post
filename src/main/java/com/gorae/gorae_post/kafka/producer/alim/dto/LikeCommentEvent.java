@@ -12,4 +12,5 @@ public class LikeCommentEvent {
     private String postUserId; // 해당 댓글의 글 주인 Id
     private String commentLikeUserId; // 좋아요를 누른사람
     private String commentUserId; // 좋아요를 눌려진 댓글
+    private String likeStatus;
 }

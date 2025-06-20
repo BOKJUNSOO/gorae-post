@@ -8,8 +8,8 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
-public class CommentRegisterEvent {
-    public static final String TOPIC = "comment-register";
+public class CommentEvent {
+    public static final String TOPIC = "comment";
 
     private String commentUserId;
     private String postUserId;
