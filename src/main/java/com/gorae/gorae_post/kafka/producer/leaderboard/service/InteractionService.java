@@ -1,4 +1,4 @@
-package com.gorae.gorae_interaction.kafka.producer.leaderboard.service;
+package com.gorae.gorae_post.kafka.producer.leaderboard.service;
 
 public interface InteractionService{
     void commentLike(Long commentId, Long userId);

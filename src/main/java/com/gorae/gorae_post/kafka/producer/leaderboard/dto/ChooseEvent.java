@@ -1,4 +1,4 @@
-package com.gorae.gorae_interaction.kafka.producer.leaderboard.dto;
+package com.gorae.gorae_post.kafka.producer.leaderboard.dto;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -1,9 +1,8 @@
-package com.gorae.gorae_interaction.kafka.producer.leaderboard.service;
+package com.gorae.gorae_post.kafka.producer.leaderboard.service;
 
-import com.gorae.gorae_interaction.kafka.KafkaMessageProducer;
+import com.gorae.gorae_post.kafka.producer.KafkaMessageProducer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
