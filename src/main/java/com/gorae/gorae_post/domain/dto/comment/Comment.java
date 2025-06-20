@@ -18,9 +18,6 @@ public class Comment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
-    private Integer questionId; // FK question.id
-
     @Column(columnDefinition = "TEXT")
     private String commentContent;
 
@@ -34,6 +31,7 @@ public class Comment {
     private LocalDateTime updateAt;
 
     @JsonIgnore
-    @ManyToOne
+    @ManyToOne(targetEntity = Question.class)
+    @JoinColumn(name = "questionId", referencedColumnName = "id",nullable = true)
     private Question question;
 }

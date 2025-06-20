@@ -3,9 +3,7 @@ package com.gorae.gorae_post.kafka.consumer.user.dto;
 import lombok.Getter;
 import lombok.Setter;
 
-// posting 발생 이후 user의 메타 정보를 갱신시키기 위한 토픽
-// 2단계 구성
-
+// 유저가 회원가입 했을때 사용되는 TOPIC
 @Getter
 @Setter
 public class UserInfoEvent {

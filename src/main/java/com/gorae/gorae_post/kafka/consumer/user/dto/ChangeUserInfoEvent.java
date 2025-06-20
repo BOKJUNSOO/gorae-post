@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 
-// User의 정보가 수정됐다면 Post에서 사용중인 DB 갱신을 위한 토픽
+// User 의 정보가 수정됐다면 Post 에서 사용중인 DB 갱신을 위한 토픽
 @Getter
 @Setter
 public class ChangeUserInfoEvent {
