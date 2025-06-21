@@ -20,5 +20,5 @@ public class UserInfo {
     private String profileImgUrl;
 
     @Column(name="user_badge",nullable = true)
-    private String userBadge;
+    private String userBadge = "0";
 }

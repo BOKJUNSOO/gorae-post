@@ -26,7 +26,8 @@ public class QuestionController {
     // 질문 생성
     @PostMapping(value = "/questions/create")
     public ApiResponseDto<Long> createQuestion (@RequestBody @Valid QuestionCreateDto questionCreateDto){
-        // TODO : JWT 로부터 userId 파싱
+        // TODO : GateWay , JWT 프로퍼티 맞추고 사용할 것
+        // String userId = GatewayRequestHeaderUtils.getUserId();
         String userId = "bok";
         Long questionId = questionService.create(questionCreateDto, userId);
         return ApiResponseDto.createOk(questionId);
@@ -35,6 +36,8 @@ public class QuestionController {
     // 질문 수정
     @PostMapping(value = "/questions/update")
     public ApiResponseDto<Long> updateQuestion (@RequestBody @Valid QuestionUpdateDto questionUpdateDto) throws AccessDeniedException, ChangeSetPersister.NotFoundException, JsonProcessingException {
+        // TODO : GateWay , JWT 프로퍼티 맞추고 사용할 것
+        // String userId = GatewayRequestHeaderUtils.getUserId();
         String userId = "bok";
         questionService.update(questionUpdateDto, userId);
         return ApiResponseDto.createOk(questionUpdateDto.getQuestionId());
@@ -43,6 +46,8 @@ public class QuestionController {
     // 질문 삭제
     @PostMapping(value = "/questions/delete")
     public ApiResponseDto<String> deleteQuestion (@RequestBody Map<String, Long> payload) throws ChangeSetPersister.NotFoundException, AccessDeniedException {
+        // TODO : GateWay , JWT 프로퍼티 맞추고 사용할 것
+        // String userId = GatewayRequestHeaderUtils.getUserId();
         String userId = "bok";
         Long questionId = payload.get("questionId");
         questionService.delete(questionId,userId);

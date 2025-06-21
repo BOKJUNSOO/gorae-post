@@ -3,6 +3,7 @@ package com.gorae.gorae_post.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gorae.gorae_post.common.exception.NotFound;
 import com.gorae.gorae_post.domain.dto.comment.Comment;
 import com.gorae.gorae_post.domain.dto.question.*;
 import com.gorae.gorae_post.domain.dto.user.UserInfo;
@@ -10,7 +11,7 @@ import com.gorae.gorae_post.domain.dto.user.UserInfoDto;
 import com.gorae.gorae_post.domain.repository.QuestionRepository;
 import com.gorae.gorae_post.domain.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.crossstore.ChangeSetPersister;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -47,11 +48,11 @@ public class QuestionService {
     }
 
     @Transactional
-    public void update(QuestionUpdateDto questionUpdateDto, String userId) throws ChangeSetPersister.NotFoundException, AccessDeniedException, JsonProcessingException {
+    public void update(QuestionUpdateDto questionUpdateDto, String userId) throws AccessDeniedException, JsonProcessingException {
         Long questionId = questionUpdateDto.getQuestionId();
         ObjectMapper mapper = new ObjectMapper();
         Question question = questionRepository.findById(questionId)
-                .orElseThrow(() -> new ChangeSetPersister.NotFoundException());
+                .orElseThrow(() -> new NotFound("존재하지 않는 글입니다."));
         if (!question.getUserId().equals(userId)) {
             throw new AccessDeniedException("본인 글만 수정이 가능합니다.");
         }
@@ -63,9 +64,9 @@ public class QuestionService {
     }
 
     @Transactional
-    public void delete(Long questionId, String userId) throws ChangeSetPersister.NotFoundException, AccessDeniedException {
+    public void delete(Long questionId, String userId) throws  AccessDeniedException {
         Question question = questionRepository.findById(questionId)
-                .orElseThrow(() -> new ChangeSetPersister.NotFoundException());
+                .orElseThrow(() -> new NotFound("존재하지 않는 글입니다."));
         if (!question.getUserId().equals(userId)) {
             throw new AccessDeniedException("본인 글만 삭제가 가능합니다.");
         }
@@ -76,10 +77,12 @@ public class QuestionService {
         questionRepository.save(question);
     }
 
-    private QuestionOverviewDto convertOverviewDto(Question question, String keyword) throws ChangeSetPersister.NotFoundException, JsonProcessingException {
+    private QuestionOverviewDto convertOverviewDto(Question question, String keyword) throws JsonProcessingException {
         String userId = question.getUserId();
+
+        // display True 인 question 만 인자로 받기 때문에 예외가 발생하지는 않는다.
         UserInfo userInfo = userRepository.findById(userId)
-                .orElseThrow(() -> new ChangeSetPersister.NotFoundException());
+                .orElseThrow(() -> new NotFound(""));
 
         UserInfoDto userInfoDto =UserInfoDto.builder()
                     .userId(userInfo.getUserId())
@@ -125,8 +128,6 @@ public class QuestionService {
                 .map(question -> {
                     try {
                         return convertOverviewDto(question,keyword);
-                    } catch (ChangeSetPersister.NotFoundException e) {
-                        throw new RuntimeException(e);
                     } catch (JsonProcessingException e) {
                         throw new RuntimeException(e);
                     }
@@ -154,8 +155,6 @@ public class QuestionService {
                 .map(question -> {
                     try {
                         return convertOverviewDto(question,keyword);
-                    } catch (ChangeSetPersister.NotFoundException e) {
-                        throw new RuntimeException(e);
                     } catch (JsonProcessingException e) {
                         throw new RuntimeException(e);
                     }
@@ -173,14 +172,14 @@ public class QuestionService {
     }
 
     @Transactional
-    public QuestionDetailDto detail(Long questionId) throws ChangeSetPersister.NotFoundException, JsonProcessingException {
-        // 질문 조회
+    public QuestionDetailDto detail(Long questionId) throws JsonProcessingException {
+        // DB에 존재하지 않는 questionId 조회시
         Question question = questionRepository.findById(questionId)
-                .orElseThrow(() -> new ChangeSetPersister.NotFoundException());
+                .orElseThrow(() -> new NotFound("존재하지 않거나 삭제된 글입니다."));
 
-        // 삭제된 질문 조회시
+        // DB에 남아있지만 display 가 False 인 questionId 조회시
         if (!question.getDisplay()) {
-            throw new ChangeSetPersister.NotFoundException();
+            throw new NotFound("존재하지 않거나 삭제된 글입니다.");
         }
 
         // viewCount 증가
@@ -190,7 +189,7 @@ public class QuestionService {
 
         // 유저 정보 조회
         UserInfo userInfo = userRepository.findById(question.getUserId())
-                .orElseThrow(() -> new ChangeSetPersister.NotFoundException());
+                .orElseThrow(() -> new NotFound("존재하지 않거나 삭제된 글입니다."));
 
         UserInfoDto userInfoDto =UserInfoDto.builder()
                 .userId(userInfo.getUserId())
