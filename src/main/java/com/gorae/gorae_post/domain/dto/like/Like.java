@@ -11,6 +11,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
+@Table(name = "comment_like")
 public class Like {
 
     @Id

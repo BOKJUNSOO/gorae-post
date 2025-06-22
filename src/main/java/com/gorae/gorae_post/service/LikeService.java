@@ -34,7 +34,7 @@ public class LikeService {
         Comment comment = commentRepository.findById(likeDto.getCommentId()).
                 orElseThrow(() -> new NotFound("이미 삭제된 답변입니다."));
 //      like 조회
-        Optional<Like> existLike = likeRepository.findByUserAndComment(userInfo, comment);
+        Optional<Like> existLike = likeRepository.findByUserInfoAndComment(userInfo, comment);
 
         if (existLike.isPresent()) {
             Like delete = existLike.get();
