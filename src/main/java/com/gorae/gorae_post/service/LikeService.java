@@ -14,7 +14,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Slf4j
@@ -26,7 +25,7 @@ public class LikeService {
     private final CommentRepository commentRepository;
 
     @Transactional
-    public void like(LikeDto likeDto) {
+    public Long like(LikeDto likeDto) {
 
         UserInfo userInfo = userRepository.findById(likeDto.getUserId()).
                 orElseThrow(() -> new NotFound("로그인이 필요한 서비스입니다."));
@@ -40,6 +39,7 @@ public class LikeService {
             Like delete = existLike.get();
             likeRepository.deleteById(delete.getId());
             comment.decreaseLikeCount();
+            return comment.getLikeCount();
         } else {
             Like like = Like.builder().
                     userInfo(userInfo).
@@ -47,6 +47,7 @@ public class LikeService {
                     build();
             likeRepository.save(like);
             comment.increaseLikeCount();
+            return comment.getLikeCount();
         }
     }
 }

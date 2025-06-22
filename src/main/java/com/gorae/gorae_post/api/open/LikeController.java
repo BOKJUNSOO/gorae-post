@@ -20,9 +20,9 @@ public class LikeController {
     private final LikeService likeService;
 
     @PostMapping(value = "/like")
-    public ApiResponseDto<String> commentLike(@RequestBody @Valid LikeDto likeDto){
+    public ApiResponseDto<Long> commentLike(@RequestBody @Valid LikeDto likeDto){
 //        TODO: @AuthenticationPrincipal UserPrincipal userPrincipal로 유저 아이디 구현
-        likeService.like(likeDto);
-        return ApiResponseDto.createOk("좋아요 요청 성공");
+        Long likeCount = likeService.like(likeDto);
+        return ApiResponseDto.createOk(likeCount);
     }
 }
