@@ -1,0 +1,68 @@
+{
+  "questionId": "1",
+  "title": "나의 Editor.js 콘텐츠 예시",
+  "content": {
+    "blocks": [
+      {
+        "type": "header",
+        "level": 1,
+        "text": "헤더 1: 가장 큰 제목입니다."
+      },
+      {
+        "type": "paragraph",
+        "text": "이곳은 일반적인 문단입니다. <b>굵은 글씨</b>와 <mark>하이라이트</mark>를 지원합니다."
+      },
+      {
+        "type": "quote",
+        "text": "위대한 발견은 작은 호기심에서 비롯되옵니다.",
+        "caption": "익명의 현자"
+      },
+      {
+        "type": "list",
+        "style": "unordered",
+        "items": ["첫 번째 항목", "두 번째 항목"]
+      },
+      {
+        "type": "checklist",
+        "items": [
+          { "text": "완료된 항목", "checked": true },
+          { "text": "해야 할 항목", "checked": false }
+        ]
+      },
+      {
+        "type": "header",
+        "level": 2,
+        "text": "헤더 2: 코드와 이미지"
+      },
+      {
+        "type": "code",
+        "code": "const a = \"Hello, World!\";\nconsole.log(a);"
+      },
+      {
+        "type": "image",
+        "url": "https://placehold.co/600x400/3B82F6/white?text=Gorae",
+        "caption": "고래 이미지 예시"
+      },
+      {
+        "type": "header",
+        "level": 3,
+        "text": "헤더 3: 표와 임베드"
+      },
+      {
+        "type": "table",
+        "withHeadings": true,
+        "content": [
+          ["언어", "프레임워크"],
+          ["JavaScript", "React/Next.js"],
+          ["Python", "Django"]
+        ]
+      },
+      {
+        "type": "embed",
+        "service": "youtube",
+        "embed": "https://www.youtube.com/embed/dQw4w9WgXcQ",
+        "source": "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+      }
+    ]
+  }
+}
