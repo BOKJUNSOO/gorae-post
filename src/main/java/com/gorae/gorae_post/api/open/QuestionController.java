@@ -2,7 +2,7 @@ package com.gorae.gorae_post.api.open;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.gorae.gorae_post.common.dto.ApiResponseDto;
-import com.gorae.gorae_post.domain.dto.question.QuestionActionRequest;
+import com.gorae.gorae_post.domain.dto.question.*;
 import com.gorae.gorae_post.service.QuestionService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.nio.file.AccessDeniedException;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -21,51 +22,60 @@ public class QuestionController {
 
     private final QuestionService questionService;
 
-    // 질문 Overview
-    @GetMapping(value = "questions")
-    public ApiResponseDto<String> overviewQuestions (
-            @RequestParam(value = "offset", defaultValue = "10") int offset,
-            @RequestParam(value = "page", defaultValue = "1") int page,
-            @RequestParam(value = "keyword", defaultValue = "") String keyword
-    ) {
-        // TODO : 검색에 따른 질문 미리보기 service
-        return ApiResponseDto.defaultOk();
+
+    // 질문 생성
+    @PostMapping(value = "/questions/create")
+    public ApiResponseDto<Long> createQuestion (@RequestBody @Valid QuestionCreateDto questionCreateDto){
+        // TODO : GateWay , JWT 프로퍼티 맞추고 사용할 것
+        // String userId = GatewayRequestHeaderUtils.getUserId();
+        String userId = "bok";
+        Long questionId = questionService.create(questionCreateDto, userId);
+        return ApiResponseDto.createOk(questionId);
     }
 
-    // 질문 상세 조회
-    @GetMapping(value = "/detail/{questionId}")
-    public ApiResponseDto<String> viewQuestion (@PathVariable("questionId") Long questionId) throws ChangeSetPersister.NotFoundException, JsonProcessingException {
-        String data = questionService.detail(questionId);
+    // 질문 수정
+    @PostMapping(value = "/questions/update")
+    public ApiResponseDto<Long> updateQuestion (@RequestBody @Valid QuestionUpdateDto questionUpdateDto) throws AccessDeniedException, ChangeSetPersister.NotFoundException, JsonProcessingException {
+        // TODO : GateWay , JWT 프로퍼티 맞추고 사용할 것
+        // String userId = GatewayRequestHeaderUtils.getUserId();
+        String userId = "bok";
+        questionService.update(questionUpdateDto, userId);
+        return ApiResponseDto.createOk(questionUpdateDto.getQuestionId());
+    }
+
+    // 질문 삭제
+    @PostMapping(value = "/questions/delete")
+    public ApiResponseDto<String> deleteQuestion (@RequestBody Map<String, Long> payload) throws ChangeSetPersister.NotFoundException, AccessDeniedException {
+        // TODO : GateWay , JWT 프로퍼티 맞추고 사용할 것
+        // String userId = GatewayRequestHeaderUtils.getUserId();
+        String userId = "bok";
+        Long questionId = payload.get("questionId");
+        questionService.delete(questionId,userId);
+        return ApiResponseDto.createOk("게시글이 삭제됐습니다.");
+    }
+
+    // 질문 Overview
+    @GetMapping(value = "/questions")
+    public ApiResponseDto<QuestionListDto> overviewQuestions (
+            @RequestParam(value = "offset", defaultValue = "10") int size,
+            @RequestParam(value = "page", defaultValue = "1") int page,
+            @RequestParam(value = "keyword",required = false) String keyword,
+            @RequestParam(value = "sort", defaultValue = "updateAt") String sort,
+            @RequestParam(value = "order", defaultValue = "desc") String order
+    ) {
+        QuestionListDto data;
+        if (keyword == null || keyword.isBlank()) {
+            data = questionService.overview(page,size,keyword,sort,order);
+        } else {
+            data = questionService.search(page,size,keyword,sort,order);
+        }
         return ApiResponseDto.createOk(data);
     }
 
-    // 질문 생성, 수정, 삭제
-    @PostMapping(value = "/questions/action")
-    public ApiResponseDto<String> createQuestion (@RequestBody @Valid QuestionActionRequest actionRequest) throws ChangeSetPersister.NotFoundException, AccessDeniedException {
-        // TODO : JWT 로부터 userId 파싱
-        String userId = "bok";
-
-        String type = actionRequest.getType();
-        switch (type) {
-            case "create":
-                questionService.create(actionRequest,userId);
-                break;
-            case "update":
-                questionService.update(actionRequest,userId);
-                break;
-            case "delete":
-                // TODO : 삭제 서비스 작성
-                questionService.delete();
-                break;
-            default:
-                throw new IllegalArgumentException("type 값을 확인해주세요");
-        }
-        return ApiResponseDto.createOk(userId);
-    }
-
-    // 질문 조회수 별 조회
-    @GetMapping
-    public ApiResponseDto<String> viewTopQuestion () {
-        return ApiResponseDto.defaultOk();
+    // 질문 상세 조회
+    @GetMapping(value = "/questions/detail")
+    public ApiResponseDto<QuestionDetailDto> viewQuestion (@RequestParam(value = "questionId") Long questionId) throws ChangeSetPersister.NotFoundException, JsonProcessingException {
+        QuestionDetailDto questionDetailDto = questionService.detail(questionId);
+        return ApiResponseDto.createOk(questionDetailDto);
     }
 }

@@ -4,16 +4,17 @@ import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Map;
+
 @Getter
 @Setter
-public class QuestionActionRequest {
-
-    // create , update, delete
-    @NotEmpty(message = "type은 필수값입니다.")
-    private String type;
+public class QuestionUpdateDto {
 
     private Long questionId;
 
     @NotEmpty
-    private QuestionForm payload;
+    private String title;
+
+    @NotEmpty
+    private Map<String,Object> content;
 }
