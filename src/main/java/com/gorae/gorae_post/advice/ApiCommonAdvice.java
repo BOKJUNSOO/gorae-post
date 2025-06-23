@@ -1,15 +1,14 @@
-package com.welab.backend_user.advice;
+package com.gorae.gorae_post.advice;
 
-import com.welab.backend_user.common.dto.ApiResponseDto;
-import com.welab.backend_user.common.exception.BadParameter;
-import com.welab.backend_user.common.exception.ClientError;
-import com.welab.backend_user.common.exception.NotFound;
+import com.gorae.gorae_post.common.dto.ApiResponseDto;
+import com.gorae.gorae_post.common.exception.BadParameter;
+import com.gorae.gorae_post.common.exception.ClientError;
+import com.gorae.gorae_post.common.exception.NotFound;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
