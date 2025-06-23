@@ -3,11 +3,17 @@ package com.gorae.gorae_post.api.open;
 import com.gorae.gorae_post.common.dto.ApiResponseDto;
 import com.gorae.gorae_post.domain.dto.comment.CommentAdoptDto;
 import com.gorae.gorae_post.domain.dto.comment.CommentCreateDto;
+import com.gorae.gorae_post.domain.dto.comment.PageResponseDto;
 import com.gorae.gorae_post.domain.dto.comment.CommentUpdateDto;
+import com.gorae.gorae_post.domain.dto.question.CommentDto;
 import com.gorae.gorae_post.service.CommentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
@@ -58,9 +64,13 @@ private final CommentService commentService;
 
     // 답변 상세 조회
     // 답변에 대한 댓글을 위해서라면 필요
-    @GetMapping(value ="/detail/{questionId}")
-    public ApiResponseDto<String> viewComment(@RequestParam(value = "questionId") Long questionId){
-        // TODO : 답변 내용 상세조회 service
-        return ApiResponseDto.defaultOk();
+    @GetMapping(value ="/detail")
+    public ApiResponseDto<PageResponseDto<CommentDto>> viewComment(
+            @RequestParam(value = "questionId") Long questionId,
+            @RequestParam(defaultValue = "1") int offset,
+            @RequestParam(defaultValue = "5") int limit){
+        Pageable pageable = PageRequest.of(offset / limit, limit);
+        PageResponseDto<CommentDto> response = commentService.commentView(questionId, pageable);
+        return ApiResponseDto.createOk(response);
     }
 }
