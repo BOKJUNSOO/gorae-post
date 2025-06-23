@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 public class LikeController {
     private final LikeService likeService;
 
-    @CrossOrigin()
     @PostMapping(value = "/like")
     public ApiResponseDto<Long> commentLike(@RequestBody @Valid LikeDto likeDto){
 //        TODO: @AuthenticationPrincipal UserPrincipal userPrincipal로 유저 아이디 구현

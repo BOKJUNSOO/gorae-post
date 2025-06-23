@@ -22,7 +22,6 @@ public class CommentController {
 private final CommentService commentService;
 
     // 답변 생성 및 수정
-    @CrossOrigin()
     @PostMapping(value="/question/answer/create")
     public ApiResponseDto<Long> createComment (@RequestBody @Valid CommentCreateDto commentCreateDto,
                                                  @RequestParam Long questionId) {
@@ -32,7 +31,6 @@ private final CommentService commentService;
         return ApiResponseDto.createOk(commentId);
     }
 
-    @CrossOrigin()
     @PostMapping(value = "/question/answer/update")
     public ApiResponseDto<Long> updateComment (@RequestBody CommentUpdateDto commentUpdateDto) throws AccessDeniedException {
 //        TODO: @AuthenticaionPrincipal로  userId 받아오기
@@ -41,7 +39,6 @@ private final CommentService commentService;
         return ApiResponseDto.createOk(updateId);
     }
 
-    @CrossOrigin()
     @PostMapping(value = "/question/answer/delete")
     public ApiResponseDto<String> deleteComment (@RequestBody Map<String, Long> payload) throws AccessDeniedException {
 //        TODO: @AuthenticaionPrincipal로  userId 받아오기
@@ -51,7 +48,6 @@ private final CommentService commentService;
         return ApiResponseDto.createOk("삭제가 완료되었습니다");
     }
 
-    @CrossOrigin()
     @PostMapping(value = "/question/answer/adopt")
     public ApiResponseDto<Long> adoptComment (@RequestBody CommentAdoptDto commentAdoptDto) throws AccessDeniedException {
 //        TODO: @AuthenticaionPrincipal로  userId 받아오기
@@ -60,10 +56,8 @@ private final CommentService commentService;
         return ApiResponseDto.createOk(adoptCommentId);
     }
 
-
     // 답변 상세 조회
     // 답변에 대한 댓글을 위해서라면 필요
-    @CrossOrigin()
     @GetMapping(value ="/detail/{questionId}")
     public ApiResponseDto<String> viewComment(@RequestParam(value = "questionId") Long questionId){
         // TODO : 답변 내용 상세조회 service
