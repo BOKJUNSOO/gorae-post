@@ -5,6 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class CommentAdpotDto {
+public class CommentAdoptDto {
     Long commentId;
+    Long questionId;
 }
