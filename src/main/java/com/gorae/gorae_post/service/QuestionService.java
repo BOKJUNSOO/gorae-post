@@ -110,6 +110,8 @@ public class QuestionService {
                     .commentId(comment.getId())
                     .commentContent(comment.getCommentContent())
                     .updateAt(comment.getUpdateAt())
+                    .likeCount(comment.getLikeCount())
+                    .adopt(comment.isAdopt())
                     .userInfoDto(userInfoDto)
                     .build();
             commentDtoList.add(dto);

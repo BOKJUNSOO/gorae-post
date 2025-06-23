@@ -18,5 +18,9 @@ public class CommentDto {
 
     private LocalDateTime updateAt;
 
+    private Long likeCount;
+
+    private boolean adopt;
+
     private UserInfoDto userInfoDto;
 }
