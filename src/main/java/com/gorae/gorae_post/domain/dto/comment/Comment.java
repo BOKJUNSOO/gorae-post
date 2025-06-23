@@ -36,8 +36,11 @@ public class Comment {
     @Column(name = "like_count", nullable = false)
     private Long likeCount = 0L;
 
+    @Column(name = "comment_adopt", nullable = false)
+    private boolean adopt;
+
     @JsonIgnore
-    @ManyToOne(targetEntity = Question.class)
+    @ManyToOne(targetEntity = Question.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "questionId", referencedColumnName = "id",nullable = true)
     private Question question;
 
