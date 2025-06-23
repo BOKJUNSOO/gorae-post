@@ -1,6 +1,7 @@
 package com.gorae.gorae_post.domain.dto.comment;
 
 import com.gorae.gorae_post.domain.dto.question.Question;
+import com.gorae.gorae_post.domain.dto.user.UserInfo;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -18,9 +19,9 @@ public class CommentCreateDto {
     private String commentContent;
 
 
-    public Comment toEntity(String userId, Question question) {
+    public Comment toEntity(UserInfo userInfo, Question question) {
         Comment comment = new Comment();
-        comment.setUserId(userId);
+        comment.setUserInfo(userInfo);
         comment.setCommentContent(this.commentContent);
         comment.setQuestion(question);
         comment.setAdopt(false);

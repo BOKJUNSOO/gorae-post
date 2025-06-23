@@ -4,6 +4,7 @@ package com.gorae.gorae_post.domain.dto.comment;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.gorae.gorae_post.domain.dto.like.Like;
 import com.gorae.gorae_post.domain.dto.question.Question;
+import com.gorae.gorae_post.domain.dto.user.UserInfo;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -24,8 +25,9 @@ public class Comment {
     @Column(columnDefinition = "TEXT")
     private String commentContent;
 
-    @Column
-    private String userId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private UserInfo userInfo;
 
     @Column
     private LocalDateTime createAt;
