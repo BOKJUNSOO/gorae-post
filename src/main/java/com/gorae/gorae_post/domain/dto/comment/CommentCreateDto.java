@@ -23,6 +23,7 @@ public class CommentCreateDto {
         comment.setUserId(userId);
         comment.setCommentContent(this.commentContent);
         comment.setQuestion(question);
+        comment.setAdopt(false);
         comment.setCreateAt(LocalDateTime.now());
         comment.setUpdateAt(LocalDateTime.now());
         return comment;
