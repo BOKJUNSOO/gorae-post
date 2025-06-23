@@ -30,9 +30,8 @@ public class CommentDto {
                 .commentId(comment.getId())
                 .commentContent(comment.getCommentContent())
                 .likeCount(comment.getLikeCount())
-                .adopt(comment.isAdopt()) // 필드 이름이 adopt라면 isAdopt()
+                .adopt(comment.isAdopt())
                 .updateAt(comment.getUpdateAt())
-                // UserInfo 엔티티를 UserInfoDto로 변환하여 포함시킵니다.
                 .userInfoDto(UserInfoDto.fromEntity(comment.getUserInfo()))
                 .build();
     }
