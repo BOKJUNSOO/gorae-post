@@ -3,14 +3,11 @@ package com.gorae.gorae_post.domain.dto.like;
 import com.gorae.gorae_post.domain.dto.comment.Comment;
 import com.gorae.gorae_post.domain.dto.user.UserInfo;
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
 @Getter
-@Setter
-@Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "comment_like")
 public class Like {
 
@@ -25,4 +22,11 @@ public class Like {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "comment_id", nullable = false)
     Comment comment;
+
+    @Builder
+    public Like (UserInfo userInfo, Comment comment){
+        this.userInfo = userInfo;
+        this.comment = comment;
+    }
+
 }
