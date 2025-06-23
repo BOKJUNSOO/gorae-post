@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gorae.gorae_post.common.exception.NotFound;
-import com.gorae.gorae_post.domain.dto.comment.Comment;
 import com.gorae.gorae_post.domain.dto.question.*;
 import com.gorae.gorae_post.domain.dto.user.UserInfo;
 import com.gorae.gorae_post.domain.dto.user.UserInfoDto;
@@ -21,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -102,22 +100,22 @@ public class QuestionService {
                 .build();
     }
 
-    private List<CommentDto> convertToCommentDtoList(Question question, UserInfoDto userInfoDto) {
-        List<Comment> commentList = question.getCommentList();
-        List<CommentDto> commentDtoList = new ArrayList<>();
-        for (Comment comment : commentList) {
-            CommentDto dto = CommentDto.builder()
-                    .commentId(comment.getId())
-                    .commentContent(comment.getCommentContent())
-                    .updateAt(comment.getUpdateAt())
-                    .likeCount(comment.getLikeCount())
-                    .adopt(comment.isAdopt())
-                    .userInfoDto(userInfoDto)
-                    .build();
-            commentDtoList.add(dto);
-        }
-        return commentDtoList;
-    }
+//    private List<CommentDto> convertToCommentDtoList(Question question, UserInfoDto userInfoDto) {
+//        List<Comment> commentList = question.getCommentList();
+//        List<CommentDto> commentDtoList = new ArrayList<>();
+//        for (Comment comment : commentList) {
+//            CommentDto dto = CommentDto.builder()
+//                    .commentId(comment.getId())
+//                    .commentContent(comment.getCommentContent())
+//                    .updateAt(comment.getUpdateAt())
+//                    .likeCount(comment.getLikeCount())
+//                    .adopt(comment.isAdopt())
+//                    .userInfoDto(userInfoDto)
+//                    .build();
+//            commentDtoList.add(dto);
+//        }
+//        return commentDtoList;
+//    }
 
     @Transactional
     public QuestionListDto overview(int page, int size, String keyword, String sort, String order) {
@@ -200,8 +198,6 @@ public class QuestionService {
                 .userBadge(userInfo.getUserBadge())
                 .build();
 
-        List<CommentDto> commentDtoList = convertToCommentDtoList(question,userInfoDto);
-
         return QuestionDetailDto.builder()
                 .questionId(question.getId())
                 .title(question.getTitle())
@@ -209,7 +205,6 @@ public class QuestionService {
                 .userInfo(userInfoDto)
                 .updateAt(question.getUpdateAt())
                 .viewCount(question.getViewCount())
-                .commentList(commentDtoList)
                 .build();
     }
 }

@@ -15,7 +15,7 @@ public class QuestionListDto {
 
     private int page;
 
-    private int size;
+    private int offset;
 
     private long totalPages;
 

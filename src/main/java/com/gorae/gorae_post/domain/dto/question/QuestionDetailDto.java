@@ -28,6 +28,4 @@ public class QuestionDetailDto {
 
     private int viewCount;
 
-    private List<CommentDto> commentList;
-
 }
