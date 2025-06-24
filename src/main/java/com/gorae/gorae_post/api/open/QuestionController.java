@@ -37,12 +37,12 @@ public class QuestionController {
     // 질문 수정
     @CrossOrigin()
     @PostMapping(value = "/questions/update")
-    public ApiResponseDto<Long> updateQuestion (@RequestBody @Valid QuestionUpdateDto questionUpdateDto) throws AccessDeniedException, ChangeSetPersister.NotFoundException, JsonProcessingException {
+    public ApiResponseDto<QuestionUpdateDto> updateQuestion (@RequestBody @Valid QuestionUpdateDto questionUpdateDto) throws AccessDeniedException, ChangeSetPersister.NotFoundException, JsonProcessingException {
         // TODO : GateWay , JWT 프로퍼티 맞추고 사용할 것
         // String userId = GatewayRequestHeaderUtils.getUserId();
         String userId = "bok";
         questionService.update(questionUpdateDto, userId);
-        return ApiResponseDto.createOk(questionUpdateDto.getQuestionId());
+        return ApiResponseDto.createOk(questionUpdateDto);
     }
 
     // 질문 삭제
