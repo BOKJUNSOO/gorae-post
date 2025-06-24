@@ -5,8 +5,8 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class AdoptCommentEvent {
-    public static final String TOPIC = "adopt-comment";
+public class AdoptNotificationEvent {
+    public static final String TOPIC = "adopt-notification";
 
     private String postUserId;
     private String adopt;

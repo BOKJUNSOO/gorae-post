@@ -6,8 +6,8 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class LikeCommentEvent {
-    public static final String TOPIC = "like-comment";
+public class LikedNotificationEvent {
+    public static final String TOPIC = "liked-notification";
 
     private String postUserId; // 해당 댓글의 글 주인 Id
     private String commentLikeUserId; // 좋아요를 누른사람
