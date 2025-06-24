@@ -30,7 +30,7 @@ public class ApiCommonAdvice {
     public ApiResponseDto<String> handleException(Exception e) {
         return ApiResponseDto.createError(
                 "serverError",
-                "서버 에러입니다.");
+                "서버 에러입니다.", e.toString());
     }
 //    리소스 foundexception
     @ResponseStatus(HttpStatus.NOT_FOUND)

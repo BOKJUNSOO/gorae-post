@@ -16,17 +16,12 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class KafkaUserMessageConsumer {
-    private final UserRepository userRepository;
+    private final UserService userService;
 
     @KafkaListener(topics = UserInfoEvent.TOPIC, properties = {JsonDeserializer.VALUE_DEFAULT_TYPE + ":com.gorae.gorae_post.kafka.consumer.user.dto.UserInfoEvent"})
     void handleSiteUserInfoEvent(UserInfoEvent event, Acknowledgment ack) {
-        System.out.println("debugging");
-        log.info("Received event : {}",event);
-        UserInfo userInfo = new UserInfo();
-        userInfo.setUserId(event.getUserId());
-        userInfo.setUserName(event.getUserName());
-        userInfo.setProfileImgUrl(event.getProfileImgUrl());
-        userRepository.save(userInfo);
+        log.info("Received event: {}", event);
+        userService.register(event);
         ack.acknowledge();
     }
 }

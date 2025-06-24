@@ -15,6 +15,7 @@ public class GatewayRequestHeaderUtils {
     public static String getUserId() {
         // 헤더에 포함된 X-Auth-UserId 키를 이용하여 userId 확인
         String userId = getRequestHeaderParamAsString("X-Auth-UserId");
+        System.out.println(userId);
         if (userId == null) {
             throw new NotFound("헤더에 userId 정보가 없습니다.");
         }
