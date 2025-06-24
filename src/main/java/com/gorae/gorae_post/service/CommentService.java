@@ -46,7 +46,7 @@ public class CommentService {
     public PageResponseDto<CommentDto> commentView(Long questionId, Pageable pageable) {
         Sort fixedSort = Sort.by(Sort.Direction.DESC, "adopt")
                 .and(Sort.by(Sort.Direction.ASC, "createAt"));
-        Pageable finalPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), fixedSort);
+        Pageable finalPageable = PageRequest.of(pageable.getPageNumber()-1, pageable.getPageSize(), fixedSort);
         Page<Comment> commentPage = commentRepository.findByQuestionIdWithUser(questionId, finalPageable);
         List<CommentDto> dtoList = commentPage.getContent().stream()
                 .map(comment ->{
@@ -62,8 +62,7 @@ public class CommentService {
                     } catch (JsonProcessingException e) {
                         throw new RuntimeException(e);
                     }
-                })
-                .collect(Collectors.toList());
+                }).collect(Collectors.toList());
         return new PageResponseDto<>(commentPage, dtoList);
     }
     // 답변 생성

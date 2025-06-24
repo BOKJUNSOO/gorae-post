@@ -72,9 +72,9 @@ private final CommentService commentService;
     @GetMapping(value ="/comments/detail")
     public ApiResponseDto<PageResponseDto<CommentDto>> viewComment(
             @RequestParam(value = "questionId") Long questionId,
-            @RequestParam(defaultValue = "1") int offset,
-            @RequestParam(defaultValue = "5") int page){
-        Pageable pageable = PageRequest.of(offset / page, page);
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "5") int offset){
+        Pageable pageable = PageRequest.of(page, offset);
         PageResponseDto<CommentDto> response = commentService.commentView(questionId, pageable);
         return ApiResponseDto.createOk(response);
     }
