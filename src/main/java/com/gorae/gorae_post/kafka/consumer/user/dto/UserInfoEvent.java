@@ -13,5 +13,5 @@ public class UserInfoEvent {
 
     private String userName;
 
-    private String userImageUrl;
+    private String profileImgUrl;
 }
