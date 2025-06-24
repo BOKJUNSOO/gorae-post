@@ -9,5 +9,6 @@ public class AdoptNotificationEvent {
     public static final String TOPIC = "adopt-notification";
 
     private String postUserId;
+    private String commentUserId;
     private String adopt;
 }
