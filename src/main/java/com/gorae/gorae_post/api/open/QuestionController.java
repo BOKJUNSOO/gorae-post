@@ -1,6 +1,7 @@
 package com.gorae.gorae_post.api.open;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.gorae.gorae_post.common.GatewayRequestHeaderUtils;
 import com.gorae.gorae_post.common.dto.ApiResponseDto;
 import com.gorae.gorae_post.domain.dto.question.*;
 import com.gorae.gorae_post.service.QuestionService;
@@ -27,9 +28,7 @@ public class QuestionController {
     @CrossOrigin()
     @PostMapping(value = "/questions/create")
     public ApiResponseDto<Long> createQuestion (@RequestBody @Valid QuestionCreateDto questionCreateDto){
-        // TODO : GateWay , JWT 프로퍼티 맞추고 사용할 것
-        // String userId = GatewayRequestHeaderUtils.getUserId();
-        String userId = "bok";
+        String userId = GatewayRequestHeaderUtils.getUserId();
         Long questionId = questionService.create(questionCreateDto, userId);
         return ApiResponseDto.createOk(questionId);
     }
@@ -39,8 +38,7 @@ public class QuestionController {
     @PostMapping(value = "/questions/update")
     public ApiResponseDto<QuestionDetailDto> updateQuestion (@RequestBody @Valid QuestionUpdateDto questionUpdateDto) throws AccessDeniedException, ChangeSetPersister.NotFoundException, JsonProcessingException {
         // TODO : GateWay , JWT 프로퍼티 맞추고 사용할 것
-        // String userId = GatewayRequestHeaderUtils.getUserId();
-        String userId = "bok";
+        String userId = GatewayRequestHeaderUtils.getUserId();
         questionService.update(questionUpdateDto, userId);
         QuestionDetailDto questionDetailDto = questionService.detail(questionUpdateDto.getQuestionId());
         return ApiResponseDto.createOk(questionDetailDto);
@@ -50,9 +48,7 @@ public class QuestionController {
     @CrossOrigin()
     @PostMapping(value = "/questions/delete")
     public ApiResponseDto<String> deleteQuestion (@RequestBody Map<String, Long> payload) throws ChangeSetPersister.NotFoundException, AccessDeniedException {
-        // TODO : GateWay , JWT 프로퍼티 맞추고 사용할 것
-        // String userId = GatewayRequestHeaderUtils.getUserId();
-        String userId = "bok";
+        String userId = GatewayRequestHeaderUtils.getUserId();
         Long questionId = payload.get("questionId");
         questionService.delete(questionId,userId);
         return ApiResponseDto.createOk("게시글이 삭제됐습니다.");

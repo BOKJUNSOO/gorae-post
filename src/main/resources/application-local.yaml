@@ -18,6 +18,11 @@ spring:
       show-sql: true
     open-in-view: false
 
+  # post 서비스 application.yml
+  logging:
+    level:
+      com.gorae.gorae_post.api.open: DEBUG
+
   jwt:
     header: Authorization
-    secret-key: AADfaskllew32dstossoiseefasdTG764Gdachsisddogae…
+    secret-key: AADfaskllew32dsfasdTG764Gdslkj298GsWg86fffffffffsasG

@@ -19,6 +19,8 @@ public class UserService {
     public void register(UserInfoEvent event) {
         UserInfo userInfo = new UserInfo();
 
+        String userId = event.getUserId();
+        log.info("Info Change User:{}",userId);
         userInfo.setUserId(event.getUserId());
         userInfo.setUserName(event.getUserName());
         userInfo.setProfileImgUrl(event.getProfileImgUrl());
@@ -35,6 +37,8 @@ public class UserService {
 
         userInfo.setUserId(event.getUserId());
         userInfo.setUserName(event.getUserName());
-        userInfo.setProfileImgUrl(event.getProfileImageUrl());
+        userInfo.setProfileImgUrl(event.getProfileImgUrl());
+
+        userRepository.save(userInfo);
     }
 }
