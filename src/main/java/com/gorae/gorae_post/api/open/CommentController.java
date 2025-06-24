@@ -1,5 +1,6 @@
 package com.gorae.gorae_post.api.open;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.gorae.gorae_post.common.dto.ApiResponseDto;
 import com.gorae.gorae_post.domain.dto.comment.CommentAdoptDto;
 import com.gorae.gorae_post.domain.dto.comment.CommentCreateDto;
@@ -29,19 +30,19 @@ private final CommentService commentService;
 
     // 답변 생성 및 수정
     @PostMapping(value="/questions/answer/create")
-    public ApiResponseDto<Long> createComment (@RequestBody @Valid CommentCreateDto commentCreateDto) {
+    public ApiResponseDto<CommentCreateDto> createComment (@RequestBody @Valid CommentCreateDto commentCreateDto) throws JsonProcessingException {
 //        TODO: @AuthenticaionPrincipal로  userId 받아오기
         String userId = "seungwon";
-        Long commentId = commentService.createComment(commentCreateDto, userId);
-        return ApiResponseDto.createOk(commentId);
+        CommentCreateDto commentContent = commentService.createComment(commentCreateDto, userId);
+        return ApiResponseDto.createOk(commentContent);
     }
 
     @PostMapping(value = "/questions/answer/update")
-    public ApiResponseDto<Long> updateComment (@RequestBody CommentUpdateDto commentUpdateDto) throws AccessDeniedException {
+    public ApiResponseDto<CommentUpdateDto> updateComment (@RequestBody CommentUpdateDto commentUpdateDto) throws AccessDeniedException, JsonProcessingException {
 //        TODO: @AuthenticaionPrincipal로  userId 받아오기
         String userId = "seungwon";
-        Long updateId = commentService.updateComment(commentUpdateDto, userId);
-        return ApiResponseDto.createOk(updateId);
+        CommentUpdateDto updateDate = commentService.updateComment(commentUpdateDto, userId);
+        return ApiResponseDto.createOk(updateDate);
     }
 
     @PostMapping(value = "/questions/answer/delete")
