@@ -68,7 +68,7 @@ public class CommentService {
     }
     // 답변 생성
     @Transactional
-    public Long createComment(CommentCreateDto commentCreateDto, String userId) {
+    public CommentCreateDto createComment(CommentCreateDto commentCreateDto, String userId) throws JsonProcessingException {
         Question question = questionRepository.findById(commentCreateDto.getQuestionId()).orElseThrow(
                 () -> new NotFound("존재하지 않거나 삭제된 글입니다.")
         );
@@ -77,20 +77,52 @@ public class CommentService {
         );
         Comment create = commentCreateDto.toEntity(userInfo, question);
         Comment savedComment = commentRepository.save(create);
-        return savedComment.getId();
+        UserInfoDto userInfoDto =UserInfoDto.builder()
+                .userId(userInfo.getUserId())
+                .userName(userInfo.getUserName())
+                .profileImgUrl(userInfo.getProfileImgUrl())
+                .userBadge(userInfo.getUserBadge())
+                .build();
+        return CommentCreateDto.builder()
+                .questionId(savedComment.getQuestion().getId())
+                .commentContent(mapCommentContent(savedComment.getCommentContent()))
+                .adopt(savedComment.isAdopt())
+                .likeCount(savedComment.getLikeCount())
+                .userInfo(userInfoDto)
+                .build();
     }
 
     //    답변 업데이트
     @Transactional
-    public Long updateComment(CommentUpdateDto commentUpdateDto, String userId) throws AccessDeniedException {
+    public CommentUpdateDto updateComment(CommentUpdateDto commentUpdateDto, String userId) throws AccessDeniedException, JsonProcessingException {
         Comment comment = commentRepository.findById(commentUpdateDto.getCommentId())
                 .orElseThrow(() -> new NotFound("답변을 찾을 수 없습니다."));
+        Question question = questionRepository.findById(commentUpdateDto.getQuestionId())
+                .orElseThrow(() -> new NotFound("게시글이 없습니다."));
+        UserInfo userInfo = userRepository.findById(userId).orElseThrow(
+                () -> new NotFound("로그인이 필요한 서비스입니다.")
+        );
+        ObjectMapper mapper = new ObjectMapper();
         if (!comment.getUserInfo().getUserId().equals(userId)) {
             throw new AccessDeniedException("작성자만 수정할 수 있습니다.");
         }
+        comment.setCommentContent(mapper.writeValueAsString(commentUpdateDto.getCommentContent()));
         comment.setUpdateAt(LocalDateTime.now());
-        comment.setCommentContent(commentUpdateDto.getCommentContent());
-        return comment.getId();
+
+        UserInfoDto userInfoDto =UserInfoDto.builder()
+                .userId(userInfo.getUserId())
+                .userName(userInfo.getUserName())
+                .profileImgUrl(userInfo.getProfileImgUrl())
+                .userBadge(userInfo.getUserBadge())
+                .build();
+        return CommentUpdateDto.builder()
+                .questionId(comment.getQuestion().getId())
+                .commentId(comment.getId())
+                .commentContent(mapCommentContent(comment.getCommentContent()))
+                .adopt(comment.isAdopt())
+                .likeCount(comment.getLikeCount())
+                .userInfoDto(userInfoDto)
+                .build();
     }
 
     //    답변 삭제

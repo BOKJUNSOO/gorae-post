@@ -3,9 +3,11 @@ package com.gorae.gorae_post.domain.dto.comment;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gorae.gorae_post.domain.dto.question.Question;
 import com.gorae.gorae_post.domain.dto.user.UserInfo;
+import com.gorae.gorae_post.domain.dto.user.UserInfoDto;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,6 +17,7 @@ import java.util.Map;
 
 @Getter
 @Setter
+@Builder
 public class CommentCreateDto {
     private Long questionId;
 
@@ -22,6 +25,11 @@ public class CommentCreateDto {
     @Size(max = 150)
     private Map<String,Object> commentContent;
 
+    private UserInfoDto userInfo;
+
+    private boolean adopt;
+
+    private Long likeCount;
 
     public Comment toEntity(UserInfo userInfo, Question question) {
         Comment comment = new Comment();
