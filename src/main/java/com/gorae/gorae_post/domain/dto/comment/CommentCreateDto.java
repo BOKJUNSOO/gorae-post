@@ -31,6 +31,8 @@ public class CommentCreateDto {
 
     private Long likeCount;
 
+    private LocalDateTime createAt;
+
     public Comment toEntity(UserInfo userInfo, Question question) {
         Comment comment = new Comment();
         comment.setUserInfo(userInfo);
