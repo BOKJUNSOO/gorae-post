@@ -182,11 +182,6 @@ public class QuestionService {
             throw new NotFound("존재하지 않거나 삭제된 글입니다.");
         }
 
-        // viewCount 증가
-        Integer viewCount = question.getViewCount();
-        question.setViewCount(viewCount + 1);
-        questionRepository.save(question);
-
         // 유저 정보 조회
         UserInfo userInfo = userRepository.findById(question.getUserId())
                 .orElseThrow(() -> new NotFound("존재하지 않거나 삭제된 글입니다."));
@@ -197,6 +192,12 @@ public class QuestionService {
                 .profileImgUrl(userInfo.getProfileImgUrl())
                 .userBadge(userInfo.getUserBadge())
                 .build();
+
+        // viewCount 증가
+        // TODO : 본인글 조회시 viewCount 증가하지 않도록 하는 로직
+        Integer viewCount = question.getViewCount();
+        question.setViewCount(viewCount + 1);
+        questionRepository.save(question);
 
         return QuestionDetailDto.builder()
                 .questionId(question.getId())
