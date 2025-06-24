@@ -29,6 +29,7 @@ public class CommentController {
 private final CommentService commentService;
 
     // 답변 생성 및 수정
+    @CrossOrigin()
     @PostMapping(value="/questions/answer/create")
     public ApiResponseDto<CommentCreateDto> createComment (@RequestBody @Valid CommentCreateDto commentCreateDto) throws JsonProcessingException {
 //        TODO: @AuthenticaionPrincipal로  userId 받아오기
@@ -37,6 +38,7 @@ private final CommentService commentService;
         return ApiResponseDto.createOk(commentContent);
     }
 
+    @CrossOrigin()
     @PostMapping(value = "/questions/answer/update")
     public ApiResponseDto<CommentUpdateDto> updateComment (@RequestBody CommentUpdateDto commentUpdateDto) throws AccessDeniedException, JsonProcessingException {
 //        TODO: @AuthenticaionPrincipal로  userId 받아오기
@@ -45,6 +47,7 @@ private final CommentService commentService;
         return ApiResponseDto.createOk(updateDate);
     }
 
+    @CrossOrigin()
     @PostMapping(value = "/questions/answer/delete")
     public ApiResponseDto<String> deleteComment (@RequestBody Map<String, Long> payload) throws AccessDeniedException {
 //        TODO: @AuthenticaionPrincipal로  userId 받아오기
@@ -54,6 +57,7 @@ private final CommentService commentService;
         return ApiResponseDto.createOk("삭제가 완료되었습니다");
     }
 
+    @CrossOrigin()
     @PostMapping(value = "/questions/answer/adopt")
     public ApiResponseDto<Long> adoptComment (@RequestBody CommentAdoptDto commentAdoptDto) throws AccessDeniedException {
 //        TODO: @AuthenticaionPrincipal로  userId 받아오기
@@ -64,12 +68,13 @@ private final CommentService commentService;
 
     // 답변 상세 조회
     // 답변에 대한 댓글을 위해서라면 필요
+    @CrossOrigin()
     @GetMapping(value ="/comments/detail")
     public ApiResponseDto<PageResponseDto<CommentDto>> viewComment(
             @RequestParam(value = "questionId") Long questionId,
             @RequestParam(defaultValue = "1") int offset,
-            @RequestParam(defaultValue = "5") int limit){
-        Pageable pageable = PageRequest.of(offset / limit, limit);
+            @RequestParam(defaultValue = "5") int page){
+        Pageable pageable = PageRequest.of(offset / page, page);
         PageResponseDto<CommentDto> response = commentService.commentView(questionId, pageable);
         return ApiResponseDto.createOk(response);
     }
