@@ -57,7 +57,7 @@ private final CommentService commentService;
     @PostMapping(value = "/question/answer/adopt")
     public ApiResponseDto<Long> adoptComment (@RequestBody CommentAdoptDto commentAdoptDto) throws AccessDeniedException {
 //        TODO: @AuthenticaionPrincipal로  userId 받아오기
-        String userId = "seungwon";
+        String userId = "bok";
         Long adoptCommentId = commentService.adoptComment(commentAdoptDto, userId);
         return ApiResponseDto.createOk(adoptCommentId);
     }

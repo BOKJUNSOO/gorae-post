@@ -47,34 +47,6 @@ public class CommentService {
                 .totalElements(commentPage.getTotalElements())
                 .build();
     }
-
-    //    답변 list 및 페이징
-//    private List<CommentDto> readComment(Question question) {
-//        List<Comment> commentList = question.getCommentList();
-//        List<CommentDto> commentDtoList = new ArrayList<>();
-//        for (Comment comment : commentList) {
-//            String userId = comment.getUserInfo().getUserId();
-//            UserInfo userInfo = userRepository.findById(userId)
-//                    .orElseThrow(() -> new NotFound("사용자가 없습니다."));
-//            UserInfoDto userInfoDto = UserInfoDto.builder()
-//                    .userId(userInfo.getUserId())
-//                    .userName(userInfo.getUserName())
-//                    .userBadge(userInfo.getUserBadge())
-//                    .profileImgUrl(userInfo.getProfileImgUrl())
-//                    .build();
-//            CommentDto dto = CommentDto.builder()
-//                    .commentId(comment.getId())
-//                    .commentContent(comment.getCommentContent())
-//                    .updateAt(comment.getUpdateAt())
-//                    .likeCount(comment.getLikeCount())
-//                    .adopt(comment.isAdopt())
-//                    .userInfoDto(userInfoDto)
-//                    .build();
-//            commentDtoList.add(dto);
-//        }
-//        return commentDtoList;
-//    }
-
     // 답변 생성
     @Transactional
     public Long createComment(CommentCreateDto commentCreateDto, String userId, Long questionId) {
@@ -125,7 +97,7 @@ public class CommentService {
                 .orElseThrow(() -> new NotFound("댓글이 존재하지 않습니다."));
 //        작성자가 해당 유저일때 확인
         if (!question.getUserId().equals(userId)) {
-            throw new AccessDeniedException("질문 작성자만 채택할 수 있습니다.");
+            throw new BadParameter("질문 작성자만 채택할 수 있습니다.");
         }
 //        답변이 해당 질문에 있는지 확인
         if (!comment.getQuestion().getId().equals(question.getId())) {
