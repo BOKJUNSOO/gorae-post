@@ -8,6 +8,7 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Map;
 
 @Getter
 @Setter
@@ -15,7 +16,7 @@ import java.time.LocalDateTime;
 public class CommentDto {
     private Long commentId;
 
-    private String commentContent;
+    private Map<String,Object> commentContent;
 
     private LocalDateTime updateAt;
 
@@ -24,15 +25,4 @@ public class CommentDto {
     private boolean adopt;
 
     private UserInfoDto userInfoDto;
-
-    public static CommentDto fromEntity(Comment comment) {
-        return CommentDto.builder()
-                .commentId(comment.getId())
-                .commentContent(comment.getCommentContent())
-                .likeCount(comment.getLikeCount())
-                .adopt(comment.isAdopt())
-                .updateAt(comment.getUpdateAt())
-                .userInfoDto(UserInfoDto.fromEntity(comment.getUserInfo()))
-                .build();
-    }
 }
