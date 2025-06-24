@@ -86,6 +86,7 @@ public class CommentService {
         return CommentCreateDto.builder()
                 .questionId(savedComment.getQuestion().getId())
                 .commentContent(mapCommentContent(savedComment.getCommentContent()))
+                .createAt(savedComment.getCreateAt())
                 .adopt(savedComment.isAdopt())
                 .likeCount(savedComment.getLikeCount())
                 .userInfo(userInfoDto)
