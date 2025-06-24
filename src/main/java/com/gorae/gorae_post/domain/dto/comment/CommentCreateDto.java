@@ -1,5 +1,6 @@
 package com.gorae.gorae_post.domain.dto.comment;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gorae.gorae_post.domain.dto.question.Question;
 import com.gorae.gorae_post.domain.dto.user.UserInfo;
 import jakarta.validation.constraints.NotEmpty;
@@ -10,19 +11,28 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Map;
 
 @Getter
 @Setter
 public class CommentCreateDto {
+    private Long questionId;
+
     @NotEmpty(message = "답글은 필수 입력값입니다.")
     @Size(max = 150)
-    private String commentContent;
+    private Map<String,Object> commentContent;
 
 
     public Comment toEntity(UserInfo userInfo, Question question) {
         Comment comment = new Comment();
         comment.setUserInfo(userInfo);
-        comment.setCommentContent(this.commentContent);
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            String contentJson = mapper.writeValueAsString(this.commentContent);
+            comment.setCommentContent(contentJson);
+        } catch (Exception e) {
+            throw new RuntimeException("content는 json 타입입니다.",e);
+        }
         comment.setQuestion(question);
         comment.setAdopt(false);
         comment.setCreateAt(LocalDateTime.now());

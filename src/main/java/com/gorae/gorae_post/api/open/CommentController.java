@@ -28,16 +28,15 @@ public class CommentController {
 private final CommentService commentService;
 
     // 답변 생성 및 수정
-    @PostMapping(value="/question/answer/create")
-    public ApiResponseDto<Long> createComment (@RequestBody @Valid CommentCreateDto commentCreateDto,
-                                                 @RequestParam Long questionId) {
+    @PostMapping(value="/questions/answer/create")
+    public ApiResponseDto<Long> createComment (@RequestBody @Valid CommentCreateDto commentCreateDto) {
 //        TODO: @AuthenticaionPrincipal로  userId 받아오기
         String userId = "seungwon";
-        Long commentId = commentService.createComment(commentCreateDto, userId, questionId);
+        Long commentId = commentService.createComment(commentCreateDto, userId);
         return ApiResponseDto.createOk(commentId);
     }
 
-    @PostMapping(value = "/question/answer/update")
+    @PostMapping(value = "/questions/answer/update")
     public ApiResponseDto<Long> updateComment (@RequestBody CommentUpdateDto commentUpdateDto) throws AccessDeniedException {
 //        TODO: @AuthenticaionPrincipal로  userId 받아오기
         String userId = "seungwon";
@@ -45,7 +44,7 @@ private final CommentService commentService;
         return ApiResponseDto.createOk(updateId);
     }
 
-    @PostMapping(value = "/question/answer/delete")
+    @PostMapping(value = "/questions/answer/delete")
     public ApiResponseDto<String> deleteComment (@RequestBody Map<String, Long> payload) throws AccessDeniedException {
 //        TODO: @AuthenticaionPrincipal로  userId 받아오기
         String userId = "seungwon";
@@ -54,7 +53,7 @@ private final CommentService commentService;
         return ApiResponseDto.createOk("삭제가 완료되었습니다");
     }
 
-    @PostMapping(value = "/question/answer/adopt")
+    @PostMapping(value = "/questions/answer/adopt")
     public ApiResponseDto<Long> adoptComment (@RequestBody CommentAdoptDto commentAdoptDto) throws AccessDeniedException {
 //        TODO: @AuthenticaionPrincipal로  userId 받아오기
         String userId = "bok";
@@ -64,7 +63,7 @@ private final CommentService commentService;
 
     // 답변 상세 조회
     // 답변에 대한 댓글을 위해서라면 필요
-    @GetMapping(value ="/detail")
+    @GetMapping(value ="/comments/detail")
     public ApiResponseDto<PageResponseDto<CommentDto>> viewComment(
             @RequestParam(value = "questionId") Long questionId,
             @RequestParam(defaultValue = "1") int offset,

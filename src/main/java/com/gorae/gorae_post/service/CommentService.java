@@ -1,5 +1,8 @@
 package com.gorae.gorae_post.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gorae.gorae_post.common.exception.BadParameter;
 import com.gorae.gorae_post.common.exception.NotFound;
 import com.gorae.gorae_post.domain.dto.comment.*;
@@ -13,15 +16,16 @@ import com.gorae.gorae_post.domain.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -32,28 +36,42 @@ public class CommentService {
     private final QuestionRepository questionRepository;
     private final UserRepository userRepository;
 
+    @Transactional
+    public Map<String,Object> mapCommentContent(String commentContentJson) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.readValue(commentContentJson, new TypeReference<>() {});
+    }
 
     @Transactional(readOnly = true)
     public PageResponseDto<CommentDto> commentView(Long questionId, Pageable pageable) {
-        Page<Comment> commentPage = commentRepository.findByQuestionIdWithUser(questionId, pageable);
+        Sort fixedSort = Sort.by(Sort.Direction.DESC, "adopt")
+                .and(Sort.by(Sort.Direction.ASC, "createAt"));
+        Pageable finalPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), fixedSort);
+        Page<Comment> commentPage = commentRepository.findByQuestionIdWithUser(questionId, finalPageable);
         List<CommentDto> dtoList = commentPage.getContent().stream()
-                .map(CommentDto::fromEntity) // DTO 변환
+                .map(comment ->{
+                    try {
+                        return  CommentDto.builder()
+                                  .commentId(comment.getId())
+                                  .commentContent(mapCommentContent(comment.getCommentContent()))
+                                  .likeCount(comment.getLikeCount())
+                                  .adopt(comment.isAdopt())
+                                  .updateAt(comment.getUpdateAt())
+                                  .userInfoDto(UserInfoDto.fromEntity(comment.getUserInfo()))
+                                  .build();
+                    } catch (JsonProcessingException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
                 .collect(Collectors.toList());
-        return PageResponseDto.<CommentDto>builder()
-                .content(dtoList)
-                .pageNumber(commentPage.getNumber())
-                .pageSize(commentPage.getSize())
-                .totalPages(commentPage.getTotalPages())
-                .totalElements(commentPage.getTotalElements())
-                .build();
+        return new PageResponseDto<>(commentPage, dtoList);
     }
     // 답변 생성
     @Transactional
-    public Long createComment(CommentCreateDto commentCreateDto, String userId, Long questionId) {
-        Question question = questionRepository.findById(questionId).orElseThrow(
+    public Long createComment(CommentCreateDto commentCreateDto, String userId) {
+        Question question = questionRepository.findById(commentCreateDto.getQuestionId()).orElseThrow(
                 () -> new NotFound("존재하지 않거나 삭제된 글입니다.")
         );
-//         TODO: 유저 아이디 검증하는 부분 추가
         UserInfo userInfo = userRepository.findById(userId).orElseThrow(
                 () -> new NotFound("로그인이 필요한 서비스입니다.")
         );
