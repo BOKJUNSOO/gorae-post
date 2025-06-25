@@ -1,10 +1,9 @@
 package com.gorae.gorae_post.domain.repository;
 
-import com.gorae.gorae_post.domain.dto.comment.Comment;
-import com.gorae.gorae_post.domain.dto.like.Like;
-import com.gorae.gorae_post.domain.dto.user.UserInfo;
+import com.gorae.gorae_post.domain.entity.Comment;
+import com.gorae.gorae_post.domain.entity.Like;
+import com.gorae.gorae_post.domain.entity.UserInfo;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
