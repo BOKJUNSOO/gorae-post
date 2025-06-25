@@ -1,6 +1,7 @@
 package com.gorae.gorae_post.api.open;
 
 
+import com.gorae.gorae_post.common.GatewayRequestHeaderUtils;
 import com.gorae.gorae_post.common.dto.ApiResponseDto;
 import com.gorae.gorae_post.domain.dto.like.Like;
 import com.gorae.gorae_post.domain.dto.like.LikeDto;
@@ -21,8 +22,8 @@ public class LikeController {
 
     @PostMapping(value = "/like")
     public ApiResponseDto<Long> commentLike(@RequestBody @Valid LikeDto likeDto){
-//        TODO: @AuthenticationPrincipal UserPrincipal userPrincipal로 유저 아이디 구현
-        Long likeCount = likeService.like(likeDto);
+        String userId = GatewayRequestHeaderUtils.getUserId();
+        Long likeCount = likeService.like(likeDto, userId);
         return ApiResponseDto.createOk(likeCount);
     }
 }

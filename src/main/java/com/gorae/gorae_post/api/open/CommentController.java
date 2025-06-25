@@ -42,7 +42,6 @@ public class CommentController {
     @CrossOrigin()
     @PostMapping(value = "/questions/answer/update")
     public ApiResponseDto<CommentUpdateDto> updateComment(@RequestBody CommentUpdateDto commentUpdateDto) throws AccessDeniedException, JsonProcessingException {
-//        TODO: @AuthenticaionPrincipal로  userId 받아오기
         String userId = GatewayRequestHeaderUtils.getUserId();
         CommentUpdateDto updateDate = commentService.updateComment(commentUpdateDto, userId);
         return ApiResponseDto.createOk(updateDate);
@@ -51,7 +50,6 @@ public class CommentController {
     @CrossOrigin()
     @PostMapping(value = "/questions/answer/delete")
     public ApiResponseDto<String> deleteComment(@RequestBody Map<String, Long> payload) throws AccessDeniedException {
-//        TODO: @AuthenticaionPrincipal로  userId 받아오기
         String userId = GatewayRequestHeaderUtils.getUserId();
         Long commentId = payload.get("commentId");
         commentService.deleteComment(commentId, userId);
@@ -61,7 +59,6 @@ public class CommentController {
     @CrossOrigin()
     @PostMapping(value = "/questions/answer/adopt")
     public ApiResponseDto<Long> adoptComment(@RequestBody CommentAdoptDto commentAdoptDto) throws AccessDeniedException {
-//        TODO: @AuthenticaionPrincipal로  userId 받아오기
         String userId = GatewayRequestHeaderUtils.getUserId();
         Long adoptCommentId = commentService.adoptComment(commentAdoptDto, userId);
         return ApiResponseDto.createOk(adoptCommentId);
