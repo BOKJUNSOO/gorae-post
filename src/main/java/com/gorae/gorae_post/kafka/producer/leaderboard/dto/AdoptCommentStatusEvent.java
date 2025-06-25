@@ -9,7 +9,8 @@ import lombok.Setter;
 public class AdoptCommentStatusEvent {
     public static final String TOPIC = "adopt-comment-status";
 
-    private String postUserId;
-    private String adopt;
+    private String postUserId; //채택한 질문 소유자ID
+    private String commentUserId;
+    private String adopt; //
 }
 
