@@ -20,6 +20,10 @@ public class QuestionOverviewDto {
 
     private String title;
 
+    private int commentCount;
+
+    private Integer viewCount;
+
     private Map<String,Object> previewContent;
 
     private String writer;

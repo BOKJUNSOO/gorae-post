@@ -66,8 +66,6 @@ public class CommentController {
 
     // 답변 상세 조회
     // 답변에 대한 댓글을 위해서라면 필요
-
-    @CrossOrigin()
     @GetMapping(value = "/auth/comments/detail")
     public ApiResponseDto<PageResponseDto<CommentDto>> viewComment(
             @RequestParam(value = "questionId") Long questionId,
