@@ -24,5 +24,5 @@ public class CommentDto {
 
     private UserInfoDto userInfoDto;
 
-    private Boolean isAuthor = false;
+    private boolean isAuthor = false;
 }
