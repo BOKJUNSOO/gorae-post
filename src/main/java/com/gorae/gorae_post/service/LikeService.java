@@ -29,14 +29,16 @@ public class LikeService {
     private final KafkaMessageProducer kafkaMessageProducer;
 
     @Transactional
-    public Long like(LikeDto likeDto, String userId) {
+    public Long like(LikeDto likeDto, String userId) { // userId는 좋아요를 누른 사람
 
         UserInfo userInfo = userRepository.findById(userId).
                 orElseThrow(() -> new NotFound("로그인이 필요한 서비스입니다."));
 
         Comment comment = commentRepository.findById(likeDto.getCommentId()).
                 orElseThrow(() -> new NotFound("이미 삭제된 답변입니다."));
-//      like 조회
+
+
+        //      like 조회
         Optional<Like> existLike = likeRepository.findByUserInfoAndComment(userInfo, comment);
 
 //        like가 존재하면 -> likeStatus는 true일 거니까
@@ -52,7 +54,13 @@ public class LikeService {
             likeRepository.save(like);
             comment.increaseLikeCount();
 //          좋아요 카프카 이벤트
-            LikeCommentStatusEvent likeEvent = LikeCommentStatusEvent.fromEntityLike(like);
+            Like likeEntity = Like.builder()
+                    .userInfo(comment.getUserInfo())
+                    .comment(comment)
+                    .likeStatus(true)
+                    .build();
+
+            LikeCommentStatusEvent likeEvent = LikeCommentStatusEvent.fromEntityLike(likeEntity);
             kafkaMessageProducer.send("like-comment-status", likeEvent);
             return like.getComment().getLikeCount();
         }

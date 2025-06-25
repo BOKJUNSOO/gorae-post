@@ -19,7 +19,7 @@ public class LikeCommentStatusEvent {
     public static LikeCommentStatusEvent fromEntityLike(Like like){
         LikeCommentStatusEvent event = new LikeCommentStatusEvent();
         event.setAction("좋아요");
-        event.setCommentLikeUserId(like.getUserInfo().getUserId());
+        event.setCommentLikeUserId(like.getUserInfo().getUserId()); // 좋아요를 누른 사람의 Id가 들어오는 중
         Long likeEvent = like.getComment().getId();
         event.setCommentId(String.valueOf(likeEvent));
         return event;
