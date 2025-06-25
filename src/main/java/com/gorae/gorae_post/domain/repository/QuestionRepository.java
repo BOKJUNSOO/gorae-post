@@ -1,6 +1,6 @@
 package com.gorae.gorae_post.domain.repository;
 
-import com.gorae.gorae_post.domain.dto.question.Question;
+import com.gorae.gorae_post.domain.entity.Question;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

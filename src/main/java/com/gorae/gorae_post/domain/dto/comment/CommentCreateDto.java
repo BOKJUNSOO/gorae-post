@@ -1,17 +1,16 @@
 package com.gorae.gorae_post.domain.dto.comment;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.gorae.gorae_post.domain.dto.question.Question;
-import com.gorae.gorae_post.domain.dto.user.UserInfo;
+import com.gorae.gorae_post.domain.entity.Comment;
+import com.gorae.gorae_post.domain.entity.Question;
+import com.gorae.gorae_post.domain.entity.UserInfo;
 import com.gorae.gorae_post.domain.dto.user.UserInfoDto;
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Map;
 

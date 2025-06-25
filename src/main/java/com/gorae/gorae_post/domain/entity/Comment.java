@@ -1,10 +1,7 @@
-package com.gorae.gorae_post.domain.dto.comment;
+package com.gorae.gorae_post.domain.entity;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.gorae.gorae_post.domain.dto.like.Like;
-import com.gorae.gorae_post.domain.dto.question.Question;
-import com.gorae.gorae_post.domain.dto.user.UserInfo;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

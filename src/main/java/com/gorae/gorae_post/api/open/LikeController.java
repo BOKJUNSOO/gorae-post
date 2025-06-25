@@ -3,12 +3,10 @@ package com.gorae.gorae_post.api.open;
 
 import com.gorae.gorae_post.common.GatewayRequestHeaderUtils;
 import com.gorae.gorae_post.common.dto.ApiResponseDto;
-import com.gorae.gorae_post.domain.dto.like.Like;
 import com.gorae.gorae_post.domain.dto.like.LikeDto;
 import com.gorae.gorae_post.service.LikeService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;

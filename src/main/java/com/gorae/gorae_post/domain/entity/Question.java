@@ -1,11 +1,9 @@
-package com.gorae.gorae_post.domain.dto.question;
+package com.gorae.gorae_post.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.gorae.gorae_post.domain.dto.comment.Comment;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
 
 import java.time.LocalDateTime;
 import java.util.List;
