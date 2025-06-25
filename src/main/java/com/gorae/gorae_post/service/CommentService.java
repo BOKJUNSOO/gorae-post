@@ -7,12 +7,14 @@ import com.gorae.gorae_post.common.exception.BadParameter;
 import com.gorae.gorae_post.common.exception.NotFound;
 import com.gorae.gorae_post.domain.dto.comment.*;
 import com.gorae.gorae_post.domain.dto.question.CommentDto;
-import com.gorae.gorae_post.domain.dto.question.Question;
-import com.gorae.gorae_post.domain.dto.user.UserInfo;
+import com.gorae.gorae_post.domain.entity.Comment;
+import com.gorae.gorae_post.domain.entity.Question;
+import com.gorae.gorae_post.domain.entity.UserInfo;
 import com.gorae.gorae_post.domain.dto.user.UserInfoDto;
 import com.gorae.gorae_post.domain.repository.CommentRepository;
 import com.gorae.gorae_post.domain.repository.QuestionRepository;
 import com.gorae.gorae_post.domain.repository.UserRepository;
+import com.gorae.gorae_post.kafka.producer.KafkaMessageProducer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -35,6 +37,7 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final QuestionRepository questionRepository;
     private final UserRepository userRepository;
+    private final KafkaMessageProducer kafkaMessageProducer;
 
     @Transactional
     public Map<String,Object> mapCommentContent(String commentContentJson) throws JsonProcessingException {

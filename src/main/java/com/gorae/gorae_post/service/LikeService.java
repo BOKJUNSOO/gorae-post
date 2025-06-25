@@ -10,6 +10,8 @@ import com.gorae.gorae_post.domain.repository.CommentRepository;
 import com.gorae.gorae_post.domain.repository.LikeRepository;
 import com.gorae.gorae_post.domain.repository.UserRepository;
 import com.gorae.gorae_post.kafka.producer.KafkaMessageProducer;
+import com.gorae.gorae_post.kafka.producer.alim.dto.LikedNotificationEvent;
+import com.gorae.gorae_post.kafka.producer.leaderboard.dto.LikeCommentStatusEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -49,8 +51,10 @@ public class LikeService {
                     build();
             likeRepository.save(like);
             comment.increaseLikeCount();
-//            LikedNotificationEvent event =
-//            kafkaMessageProducer.send("liked-notification", );
+            LikeCommentStatusEvent likeEvent = LikeCommentStatusEvent.fromEntity(like);
+            kafkaMessageProducer.send("like-comment-status", likeEvent);
+            LikedNotificationEvent notiEvent = LikedNotificationEvent.fromEntity(like);
+            kafkaMessageProducer.send("liked-notification", notiEvent);
             return comment.getLikeCount();
         }
     }
