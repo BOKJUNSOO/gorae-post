@@ -24,8 +24,13 @@ public class UserInfo {
     @Column(name="profile_img_url")
     private String profileImgUrl;
 
+    // 채택율에 따른 뱃지 (consumer 에서는 userBadge)
     @Column(name="user_badge",nullable = true)
-    private String userBadge = "0";
+    private String userBadge = "1";
+
+    // 좋아요 받은 갯수에 따른 뱃지 (consumer 에서는 likeBadge)
+    @Column(name="like_badge",nullable = true)
+    private String likeBadge = "1";
 
     @OneToMany(mappedBy = "userInfo", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
