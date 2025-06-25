@@ -87,6 +87,7 @@ public class CommentService {
                 .userName(userInfo.getUserName())
                 .profileImgUrl(userInfo.getProfileImgUrl())
                 .userBadge(userInfo.getUserBadge())
+                .likeBadge(userInfo.getLikeBadge())
                 .build();
         CommentNotificationEvent event = CommentNotificationEvent.fromEntity(savedComment);
         kafkaMessageProducer.send("comment-notification", event);
@@ -122,6 +123,7 @@ public class CommentService {
                 .userName(userInfo.getUserName())
                 .profileImgUrl(userInfo.getProfileImgUrl())
                 .userBadge(userInfo.getUserBadge())
+                .likeBadge(userInfo.getLikeBadge())
                 .build();
         return CommentUpdateDto.builder()
                 .questionId(comment.getQuestion().getId())
