@@ -227,37 +227,39 @@ public class QuestionService {
                 .build();
     }
 
-//    @Transactional
-//    public MyQuestionListDto myDetail(String userId, int page, int size) {
-//        Pageable pageable = PageRequest.of(page - 1, size);
-//        UserInfo userInfo = userRepository.findById(userId)
-//                .orElseThrow(() -> new NotFound("로그인이 필요한 서비스입니다."));
-//        Page<Question> myPage = questionRepository.findByUserIdAndDisplayTrue(userInfo.getUserId(), pageable);
-//
-//        List<MyQuestionDto> myQuestionList = myPage.getContent()
-//                .stream()
-//                .map(
-//                        question -> {
-//                            try{
-//                                return MyQuestionDto.builder()
-//                                        .title(question.getTitle())
-//                                        .questionId(question.getId())
-//                                        .viewCount(question.getViewCount())
-//                                        .commentCount()
-//                                        .build();
-//                            } catch (Exception e) {
-//                                throw new RuntimeException(e);
-//                            }
-//                        }
-//                ).toList();
-//        MyQuestionListDto myQuestion = new MyQuestionListDto(
-//                myQuestionList,
-//                page,
-//                size,
-//                myPage.getTotalPages(),
-//                myPage.getTotalElements()
-//        );
-//        return myQuestion;
-    //}
+    @Transactional
+    public MyQuestionListDto myDetail(String userId, int page, int size) {
+        Pageable pageable = PageRequest.of(page - 1, size);
+        UserInfo userInfo = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFound("로그인이 필요한 서비스입니다."));
+        Page<Question> myPage = questionRepository.findByUserIdAndDisplayTrue(userInfo.getUserId(), pageable);
+
+        List<MyQuestionDto> myQuestionList = myPage.getContent()
+                .stream()
+                .map(
+                        question -> {
+                            try{
+                                List<Comment> commentList = commentRepository.findAllByQuestionId(question.getId());
+                                int commentCount = commentList.size();
+                                return MyQuestionDto.builder()
+                                        .title(question.getTitle())
+                                        .questionId(question.getId())
+                                        .viewCount(question.getViewCount())
+                                        .commentCount(commentCount)
+                                        .build();
+                            } catch (Exception e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+                ).toList();
+        MyQuestionListDto myQuestion = new MyQuestionListDto(
+                myQuestionList,
+                page,
+                size,
+                myPage.getTotalPages(),
+                myPage.getTotalElements()
+        );
+        return myQuestion;
+    }
 
 }
