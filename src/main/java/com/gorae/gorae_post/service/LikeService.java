@@ -9,6 +9,8 @@ import com.gorae.gorae_post.domain.dto.user.UserInfo;
 import com.gorae.gorae_post.domain.repository.CommentRepository;
 import com.gorae.gorae_post.domain.repository.LikeRepository;
 import com.gorae.gorae_post.domain.repository.UserRepository;
+import com.gorae.gorae_post.kafka.producer.KafkaMessageProducer;
+import com.gorae.gorae_post.kafka.producer.alim.dto.LikedNotificationEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -23,11 +25,12 @@ public class LikeService {
     private final LikeRepository likeRepository;
     private final UserRepository userRepository;
     private final CommentRepository commentRepository;
+    private final KafkaMessageProducer kafkaMessageProducer;
 
     @Transactional
-    public Long like(LikeDto likeDto) {
+    public Long like(LikeDto likeDto, String userId) {
 
-        UserInfo userInfo = userRepository.findById(likeDto.getUserId()).
+        UserInfo userInfo = userRepository.findById(userId).
                 orElseThrow(() -> new NotFound("로그인이 필요한 서비스입니다."));
 
         Comment comment = commentRepository.findById(likeDto.getCommentId()).
@@ -47,6 +50,8 @@ public class LikeService {
                     build();
             likeRepository.save(like);
             comment.increaseLikeCount();
+            LikedNotificationEvent event =
+            kafkaMessageProducer.send("liked-notification", );
             return comment.getLikeCount();
         }
     }
