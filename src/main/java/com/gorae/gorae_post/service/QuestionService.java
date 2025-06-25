@@ -195,6 +195,7 @@ public class QuestionService {
                 .userName(userInfo.getUserName())
                 .profileImgUrl(userInfo.getProfileImgUrl())
                 .userBadge(userInfo.getUserBadge())
+                .likeBadge(userInfo.getLikeBadge())
                 .build();
 
         // viewCount 증가
