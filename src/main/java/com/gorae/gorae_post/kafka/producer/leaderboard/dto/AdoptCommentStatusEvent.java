@@ -1,6 +1,7 @@
 package com.gorae.gorae_post.kafka.producer.leaderboard.dto;
 
 
+import com.gorae.gorae_post.domain.entity.Comment;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,8 +10,13 @@ import lombok.Setter;
 public class AdoptCommentStatusEvent {
     public static final String TOPIC = "adopt-comment-status";
 
-    private String postUserId; //채택한 질문 소유자ID
-    private String commentUserId;
-    private String adopt; //
+    private String commentId;
+
+    public static AdoptCommentStatusEvent fromEntity(Comment comment){
+        AdoptCommentStatusEvent event = new AdoptCommentStatusEvent();
+        Long adoptId = comment.getId();
+        event.setCommentId(String.valueOf(adoptId));
+        return event;
+    }
 }
 

@@ -43,6 +43,9 @@ public class LikeService {
             Like delete = existLike.get();
             likeRepository.deleteById(delete.getId());
             comment.decreaseLikeCount();
+//           좋아요 취소 카프카 이벤트
+            LikeCommentStatusEvent cancelEvent = LikeCommentStatusEvent.fromEntityCancel(delete);
+            kafkaMessageProducer.send("like-comment-status", delete);
             return comment.getLikeCount();
         } else {
             Like like = Like.builder().
@@ -51,8 +54,10 @@ public class LikeService {
                     build();
             likeRepository.save(like);
             comment.increaseLikeCount();
-            LikeCommentStatusEvent likeEvent = LikeCommentStatusEvent.fromEntity(like);
+//          좋아요 카프카 이벤트
+            LikeCommentStatusEvent likeEvent = LikeCommentStatusEvent.fromEntityLike(like);
             kafkaMessageProducer.send("like-comment-status", likeEvent);
+//            좋아요 알림 이벤트
             LikedNotificationEvent notiEvent = LikedNotificationEvent.fromEntity(like);
             kafkaMessageProducer.send("liked-notification", notiEvent);
             return comment.getLikeCount();

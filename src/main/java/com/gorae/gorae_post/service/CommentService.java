@@ -15,6 +15,9 @@ import com.gorae.gorae_post.domain.repository.CommentRepository;
 import com.gorae.gorae_post.domain.repository.QuestionRepository;
 import com.gorae.gorae_post.domain.repository.UserRepository;
 import com.gorae.gorae_post.kafka.producer.KafkaMessageProducer;
+import com.gorae.gorae_post.kafka.producer.alim.dto.AdoptNotificationEvent;
+import com.gorae.gorae_post.kafka.producer.alim.dto.CommentNotificationEvent;
+import com.gorae.gorae_post.kafka.producer.leaderboard.dto.AdoptCommentStatusEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -85,6 +88,8 @@ public class CommentService {
                 .profileImgUrl(userInfo.getProfileImgUrl())
                 .userBadge(userInfo.getUserBadge())
                 .build();
+        CommentNotificationEvent event = CommentNotificationEvent.fromEntity(savedComment);
+        kafkaMessageProducer.send("comment-notification", event);
         return CommentCreateDto.builder()
                 .questionId(savedComment.getQuestion().getId())
                 .commentContent(mapCommentContent(savedComment.getCommentContent()))
@@ -161,6 +166,12 @@ public class CommentService {
             throw new BadParameter("이미 채택된 답변이 존재합니다.");
         }
         comment.setAdopt(true);
+//        채택 카프카 알림 이벤트
+        AdoptNotificationEvent notificationEvent = AdoptNotificationEvent.fromEntity(comment);
+        kafkaMessageProducer.send("adopt-notification", notificationEvent);
+//        채택 카프카 리더보드 이벤트
+        AdoptCommentStatusEvent leaderEvent = AdoptCommentStatusEvent.fromEntity(comment);
+        kafkaMessageProducer.send("adopt-comment-status",leaderEvent);
         return comment.getId();
     }
 }
