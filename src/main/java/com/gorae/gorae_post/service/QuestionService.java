@@ -88,6 +88,7 @@ public class QuestionService {
                     .userName(userInfo.getUserName())
                     .profileImgUrl(userInfo.getProfileImgUrl())
                     .userBadge(userInfo.getUserBadge())
+                    .likeBadge(userInfo.getLikeBadge())
                     .build();
 
         // Question Entity class 인스턴스를 질문 미리보기 타입으로 변경해주는 함수
