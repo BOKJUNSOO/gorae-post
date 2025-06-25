@@ -74,8 +74,7 @@ public class QuestionController {
     }
 
     // 질문 상세 조회
-    @CrossOrigin()
-    @GetMapping(value = "/auth//questions/detail")
+    @GetMapping(value = "/auth/questions/detail")
     public ApiResponseDto<QuestionDetailDto> viewQuestion(@RequestParam(value = "questionId") Long questionId) throws ChangeSetPersister.NotFoundException, JsonProcessingException {
         String userId = GatewayRequestHeaderUtils.getUserId();
         QuestionDetailDto questionDetailDto = questionService.detail(questionId, userId);
