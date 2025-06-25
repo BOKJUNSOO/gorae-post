@@ -25,6 +25,7 @@ import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -109,6 +110,14 @@ public class QuestionService {
                 .previewContent(mapContent(question.getContentJson()))
                 .writer(question.getUserId())
                 .build();
+    }
+
+    @Transactional
+    public void increment(Long questionId) {
+        Question question = questionRepository.findById(questionId)
+                .orElseThrow(() -> new NotFound("존재하지 않거나 삭제된 글입니다."));
+
+        question.setViewCount(question.getViewCount() + 1);
     }
 
 //    private List<CommentDto> convertToCommentDtoList(Question question, UserInfoDto userInfoDto) {
@@ -206,7 +215,7 @@ public class QuestionService {
                 .build();
 
         // viewCount 증가
-        // TODO : 본인글 조회시 viewCount 증가하지 않도록 하는 로직
+
         Integer viewCount = question.getViewCount();
         question.setViewCount(viewCount + 1);
         questionRepository.save(question);

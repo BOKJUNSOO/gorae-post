@@ -69,12 +69,31 @@ public class QuestionController {
         return ApiResponseDto.createOk(data);
     }
 
+//    // 질문 상세 조회
+//    @PostMapping(value = "/auth/questions/detail")
+//    public ApiResponseDto<QuestionDetailDto> viewQuestion (@RequestBody Map<String, Long> payload) throws ChangeSetPersister.NotFoundException, JsonProcessingException {
+//        String userId = GatewayRequestHeaderUtils.getUserId();
+//        Long questionId = payload.get("questionId");
+//        QuestionDetailDto questionDetailDto = questionService.detail(questionId, userId);
+//        return ApiResponseDto.createOk(questionDetailDto);
+//    }
+
+
     // 질문 상세 조회
     @GetMapping(value = "/auth/questions/detail")
-    public ApiResponseDto<QuestionDetailDto> viewQuestion (@RequestParam(value = "questionId") Long questionId) throws ChangeSetPersister.NotFoundException, JsonProcessingException {
+    public ApiResponseDto<QuestionDetailDto> viewQuestion (@RequestParam Long questionId) throws ChangeSetPersister.NotFoundException, JsonProcessingException {
         String userId = GatewayRequestHeaderUtils.getUserId();
         QuestionDetailDto questionDetailDto = questionService.detail(questionId, userId);
         return ApiResponseDto.createOk(questionDetailDto);
+    }
+
+    // view count 증가 컨트롤러
+    // 상세 조회시 같이 호출
+    @PostMapping(value = "/auth/questions/views")
+    public ApiResponseDto<String> increaseView (@RequestBody Map<String, Long> payload){
+        Long questionId = payload.get("questionId");
+        questionService.increment(questionId);
+        return ApiResponseDto.defaultOk();
     }
 
     @CrossOrigin()
