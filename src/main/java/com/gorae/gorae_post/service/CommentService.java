@@ -60,19 +60,16 @@ public class CommentService {
         List<CommentDto> dtoList = commentPage.getContent().stream()
                 .map(comment ->{
                     try {
-                        boolean isAdopted = comment.isAdopt();
-
-//                        1. 질문에 아직 채택된 답변이 없고
-//                        2. 현재 로그인 한 사용자가 작성자 본인
-//                        3. 댓글이 아직 채택되지 않은 상태일 때
-                        boolean canAdopt = !commentAdopted && (userId.equals(question.getUserId()))
-                                && !isAdopted;
                         boolean isAuthor = false;
                         if(userId != null && comment.getUserInfo().getUserId().equals(userId)){
                             isAuthor = true;
                         }
-
-
+                        boolean isAdopted = comment.isAdopt();
+//                        1. 질문에 아직 채택된 답변이 없고
+//                        2. 현재 로그인 한 사용자가 작성자 본인
+//                        3. 댓글이 아직 채택되지 않은 상태일 때
+                        boolean canAdopt = !commentAdopted && (userId != null && userId.equals(question.getUserId()))
+                                && !isAdopted;
                         return  CommentDto.builder()
                                   .commentId(comment.getId())
                                   .commentContent(mapCommentContent(comment.getCommentContent()))

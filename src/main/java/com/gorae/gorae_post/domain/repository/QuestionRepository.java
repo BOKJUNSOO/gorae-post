@@ -10,4 +10,5 @@ import org.springframework.stereotype.Repository;
 public interface QuestionRepository extends JpaRepository<Question, Long> {
     Page<Question> findByDisplayTrue(Pageable pageable);
     Page<Question> findByDisplayTrueAndTitleContainingOrContentJsonContaining(String titleContain,String ContentContain, Pageable page);
+    Page<Question> findByUserIdAndDisplayTrue(String userId,Pageable page);
 }
