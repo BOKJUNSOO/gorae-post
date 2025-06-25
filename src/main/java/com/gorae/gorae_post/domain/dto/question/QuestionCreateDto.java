@@ -1,6 +1,7 @@
 package com.gorae.gorae_post.domain.dto.question;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gorae.gorae_post.domain.entity.Question;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;

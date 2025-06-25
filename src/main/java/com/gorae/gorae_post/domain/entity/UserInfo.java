@@ -1,6 +1,5 @@
-package com.gorae.gorae_post.domain.dto.user;
+package com.gorae.gorae_post.domain.entity;
 
-import com.gorae.gorae_post.domain.dto.comment.Comment;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

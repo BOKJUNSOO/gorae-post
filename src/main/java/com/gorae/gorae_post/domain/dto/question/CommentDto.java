@@ -1,12 +1,10 @@
 package com.gorae.gorae_post.domain.dto.question;
 
-import com.gorae.gorae_post.domain.dto.comment.Comment;
 import com.gorae.gorae_post.domain.dto.user.UserInfoDto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Map;
 

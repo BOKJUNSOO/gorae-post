@@ -2,15 +2,14 @@ package com.gorae.gorae_post.service;
 
 
 import com.gorae.gorae_post.common.exception.NotFound;
-import com.gorae.gorae_post.domain.dto.comment.Comment;
-import com.gorae.gorae_post.domain.dto.like.Like;
+import com.gorae.gorae_post.domain.entity.Comment;
+import com.gorae.gorae_post.domain.entity.Like;
 import com.gorae.gorae_post.domain.dto.like.LikeDto;
-import com.gorae.gorae_post.domain.dto.user.UserInfo;
+import com.gorae.gorae_post.domain.entity.UserInfo;
 import com.gorae.gorae_post.domain.repository.CommentRepository;
 import com.gorae.gorae_post.domain.repository.LikeRepository;
 import com.gorae.gorae_post.domain.repository.UserRepository;
 import com.gorae.gorae_post.kafka.producer.KafkaMessageProducer;
-import com.gorae.gorae_post.kafka.producer.alim.dto.LikedNotificationEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -50,8 +49,8 @@ public class LikeService {
                     build();
             likeRepository.save(like);
             comment.increaseLikeCount();
-            LikedNotificationEvent event =
-            kafkaMessageProducer.send("liked-notification", );
+//            LikedNotificationEvent event =
+//            kafkaMessageProducer.send("liked-notification", );
             return comment.getLikeCount();
         }
     }

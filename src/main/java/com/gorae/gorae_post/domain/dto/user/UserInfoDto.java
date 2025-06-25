@@ -1,5 +1,6 @@
 package com.gorae.gorae_post.domain.dto.user;
 
+import com.gorae.gorae_post.domain.entity.UserInfo;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;

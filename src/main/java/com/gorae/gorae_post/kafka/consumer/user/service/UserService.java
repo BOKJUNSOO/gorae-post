@@ -1,6 +1,6 @@
 package com.gorae.gorae_post.kafka.consumer.user.service;
 
-import com.gorae.gorae_post.domain.dto.user.UserInfo;
+import com.gorae.gorae_post.domain.entity.UserInfo;
 import com.gorae.gorae_post.domain.repository.UserRepository;
 import com.gorae.gorae_post.kafka.consumer.user.dto.ChangeUserInfoEvent;
 import com.gorae.gorae_post.kafka.consumer.user.dto.UserInfoEvent;
