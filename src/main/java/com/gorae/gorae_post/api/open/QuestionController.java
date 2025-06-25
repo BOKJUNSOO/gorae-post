@@ -55,9 +55,8 @@ public class QuestionController {
     }
 
     // 질문 Overview
-    @CrossOrigin()
-    @GetMapping(value = "/auth//questions")
-    public ApiResponseDto<QuestionListDto> overviewQuestions(
+    @GetMapping(value = "/auth/questions")
+    public ApiResponseDto<QuestionListDto> overviewQuestions (
             @RequestParam(value = "offset", defaultValue = "10") int size,
             @RequestParam(value = "page", defaultValue = "1") int page,
             @RequestParam(value = "keyword", required = false) String keyword,
@@ -74,8 +73,9 @@ public class QuestionController {
     }
 
     // 질문 상세 조회
+    @CrossOrigin()
     @GetMapping(value = "/auth/questions/detail")
-    public ApiResponseDto<QuestionDetailDto> viewQuestion(@RequestParam(value = "questionId") Long questionId) throws ChangeSetPersister.NotFoundException, JsonProcessingException {
+    public ApiResponseDto<QuestionDetailDto> viewQuestion (@RequestParam(value = "questionId") Long questionId) throws ChangeSetPersister.NotFoundException, JsonProcessingException {
         String userId = GatewayRequestHeaderUtils.getUserId();
         QuestionDetailDto questionDetailDto = questionService.detail(questionId, userId);
         return ApiResponseDto.createOk(questionDetailDto);
