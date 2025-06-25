@@ -27,7 +27,7 @@ public class QuestionController {
     // 질문 생성
     @CrossOrigin()
     @PostMapping(value = "/questions/create")
-    public ApiResponseDto<Long> createQuestion (@RequestBody @Valid QuestionCreateDto questionCreateDto){
+    public ApiResponseDto<Long> createQuestion (@RequestBody @Valid QuestionCreateDto questionCreateDto) throws AccessDeniedException {
         String userId = GatewayRequestHeaderUtils.getUserId();
         Long questionId = questionService.create(questionCreateDto, userId);
         return ApiResponseDto.createOk(questionId);
@@ -40,7 +40,7 @@ public class QuestionController {
         // TODO : GateWay , JWT 프로퍼티 맞추고 사용할 것
         String userId = GatewayRequestHeaderUtils.getUserId();
         questionService.update(questionUpdateDto, userId);
-        QuestionDetailDto questionDetailDto = questionService.detail(questionUpdateDto.getQuestionId());
+        QuestionDetailDto questionDetailDto = questionService.detail(questionUpdateDto.getQuestionId(), userId);
         return ApiResponseDto.createOk(questionDetailDto);
     }
 
@@ -77,7 +77,8 @@ public class QuestionController {
     @CrossOrigin()
     @GetMapping(value = "/auth/questions/detail")
     public ApiResponseDto<QuestionDetailDto> viewQuestion (@RequestParam(value = "questionId") Long questionId) throws ChangeSetPersister.NotFoundException, JsonProcessingException {
-        QuestionDetailDto questionDetailDto = questionService.detail(questionId);
+        String userId = GatewayRequestHeaderUtils.getUserId();
+        QuestionDetailDto questionDetailDto = questionService.detail(questionId, userId);
         return ApiResponseDto.createOk(questionDetailDto);
     }
 }

@@ -40,8 +40,10 @@ public class QuestionService {
     }
 
     @Transactional
-    public Long create(QuestionCreateDto questionCreateDto, String userId) {
+    public Long create(QuestionCreateDto questionCreateDto, String userId) throws AccessDeniedException {
         Question question = questionCreateDto.toEntity(userId);
+        UserInfo userInfo = userRepository.findById(userId)
+                        .orElseThrow(() -> new AccessDeniedException("인증되지 않았습니다."));
         questionRepository.save(question);
         return question.getId();
     }
@@ -174,7 +176,7 @@ public class QuestionService {
     }
 
     @Transactional
-    public QuestionDetailDto detail(Long questionId) throws JsonProcessingException {
+    public QuestionDetailDto detail(Long questionId, String userId) throws JsonProcessingException {
         // DB에 존재하지 않는 questionId 조회시
         Question question = questionRepository.findById(questionId)
                 .orElseThrow(() -> new NotFound("존재하지 않거나 삭제된 글입니다."));
@@ -201,12 +203,18 @@ public class QuestionService {
         question.setViewCount(viewCount + 1);
         questionRepository.save(question);
 
+        boolean author = false;
+        if(userId != null && userId.equals(userInfoDto.getUserId())){
+            author = true;
+        }
+
         return QuestionDetailDto.builder()
                 .questionId(question.getId())
                 .title(question.getTitle())
                 .detailContent(mapContent(question.getContentJson()))
                 .userInfo(userInfoDto)
                 .updateAt(question.getUpdateAt())
+                .isAuthor(author)
                 .viewCount(question.getViewCount())
                 .build();
     }

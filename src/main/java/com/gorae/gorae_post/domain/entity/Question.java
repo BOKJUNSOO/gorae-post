@@ -39,4 +39,5 @@ public class Question {
 
     @Column
     private Boolean display = true;
+
 }

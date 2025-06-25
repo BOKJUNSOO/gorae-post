@@ -21,7 +21,7 @@ public class CommentNotificationEvent {
         CommentNotificationEvent event = new CommentNotificationEvent();
         event.setCommentUserId(comment.getUserInfo().getUserId());
         event.setPostUserId(comment.getQuestion().getUserId());
-        event.setCommentContent(comment.getCommentContent());
+        event.setCommentContent("답변이 등록되었습니다.");
         event.setEventTime(comment.getCreateAt());
         return event;
     }
