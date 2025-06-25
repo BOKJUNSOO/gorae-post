@@ -102,7 +102,6 @@ public class CommentService {
                 .createAt(savedComment.getCreateAt())
                 .adopt(savedComment.isAdopt())
                 .likeCount(savedComment.getLikeCount())
-                .isAuthor(savedComment.getIsAuthor())
                 .userInfo(userInfoDto)
                 .build();
     }
