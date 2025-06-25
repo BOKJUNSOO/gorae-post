@@ -33,17 +33,18 @@ public class QuestionService {
     private final UserRepository userRepository;
 
     @Transactional
-    public Map<String,Object> mapContent(String contentJson) throws JsonProcessingException {
+    public Map<String, Object> mapContent(String contentJson) throws JsonProcessingException {
         // 저장된 String block 을 역직렬화 하는 함수
         ObjectMapper mapper = new ObjectMapper();
-        return mapper.readValue(contentJson, new TypeReference<>() {});
+        return mapper.readValue(contentJson, new TypeReference<>() {
+        });
     }
 
     @Transactional
     public Long create(QuestionCreateDto questionCreateDto, String userId) throws AccessDeniedException {
         Question question = questionCreateDto.toEntity(userId);
         UserInfo userInfo = userRepository.findById(userId)
-                        .orElseThrow(() -> new AccessDeniedException("인증되지 않았습니다."));
+                .orElseThrow(() -> new AccessDeniedException("인증되지 않았습니다."));
         questionRepository.save(question);
         return question.getId();
     }
@@ -65,7 +66,7 @@ public class QuestionService {
     }
 
     @Transactional
-    public void delete(Long questionId, String userId) throws  AccessDeniedException {
+    public void delete(Long questionId, String userId) throws AccessDeniedException {
         Question question = questionRepository.findById(questionId)
                 .orElseThrow(() -> new NotFound("존재하지 않는 글입니다."));
         if (!question.getUserId().equals(userId)) {
@@ -84,7 +85,6 @@ public class QuestionService {
         // display True 인 question 만 인자로 받기 때문에 예외가 발생하지는 않는다.
         UserInfo userInfo = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFound(""));
-
         UserInfoDto userInfoDto =UserInfoDto.builder()
                     .userId(userInfo.getUserId())
                     .userName(userInfo.getUserName())
@@ -92,10 +92,9 @@ public class QuestionService {
                     .userBadge(userInfo.getUserBadge())
                     .likeBadge(userInfo.getLikeBadge())
                     .build();
-
         // Question Entity class 인스턴스를 질문 미리보기 타입으로 변경해주는 함수
         return QuestionOverviewDto.builder()
-                .keyword(keyword == null ? "":keyword)
+                .keyword(keyword == null ? "" : keyword)
                 .questionId(question.getId())
                 .userInfoDto(userInfoDto)
                 .title(question.getTitle())
@@ -123,7 +122,7 @@ public class QuestionService {
 
     @Transactional
     public QuestionListDto overview(int page, int size, String keyword, String sort, String order) {
-        Pageable pageable = PageRequest.of(page-1,size, Sort.by(Sort.Direction.DESC, sort));
+        Pageable pageable = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.DESC, sort));
 
         Page<Question> questionPage = questionRepository.findByDisplayTrue(pageable);
 
@@ -131,7 +130,7 @@ public class QuestionService {
                 .stream()
                 .map(question -> {
                     try {
-                        return convertOverviewDto(question,keyword);
+                        return convertOverviewDto(question, keyword);
                     } catch (JsonProcessingException e) {
                         throw new RuntimeException(e);
                     }
@@ -150,15 +149,15 @@ public class QuestionService {
 
     @Transactional
     public QuestionListDto search(int page, int size, String keyword, String sort, String order) {
-        Pageable pageable = PageRequest.of(page-1,size, Sort.by(Sort.Direction.DESC,sort));
+        Pageable pageable = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.DESC, sort));
 
-        Page<Question> questionPage = questionRepository.findByDisplayTrueAndTitleContainingOrContentJsonContaining(keyword,keyword,pageable);
+        Page<Question> questionPage = questionRepository.findByDisplayTrueAndTitleContainingOrContentJsonContaining(keyword, keyword, pageable);
 
         List<QuestionOverviewDto> overviewDtos = questionPage.getContent()
                 .stream()
                 .map(question -> {
                     try {
-                        return convertOverviewDto(question,keyword);
+                        return convertOverviewDto(question, keyword);
                     } catch (JsonProcessingException e) {
                         throw new RuntimeException(e);
                     }
@@ -190,7 +189,7 @@ public class QuestionService {
         UserInfo userInfo = userRepository.findById(question.getUserId())
                 .orElseThrow(() -> new NotFound("존재하지 않거나 삭제된 글입니다."));
 
-        UserInfoDto userInfoDto =UserInfoDto.builder()
+        UserInfoDto userInfoDto = UserInfoDto.builder()
                 .userId(userInfo.getUserId())
                 .userName(userInfo.getUserName())
                 .profileImgUrl(userInfo.getProfileImgUrl())
@@ -205,7 +204,7 @@ public class QuestionService {
         questionRepository.save(question);
 
         boolean author = false;
-        if(userId != null && userId.equals(userInfoDto.getUserId())){
+        if (userId != null && userId.equals(userInfoDto.getUserId())) {
             author = true;
         }
 
@@ -219,4 +218,36 @@ public class QuestionService {
                 .viewCount(question.getViewCount())
                 .build();
     }
+
+    @Transactional
+    public MyQuestionListDto myDetail(String userId, int page, int size) {
+        Pageable pageable = PageRequest.of(page - 1, size);
+        UserInfo userInfo = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFound("로그인이 필요한 서비스입니다."));
+        Page<Question> myPage = questionRepository.findByUserIdAndDisplayTrue(userInfo.getUserId(), pageable);
+
+        List<MyQuestionDto> myQuestionList = myPage.getContent()
+                .stream()
+                .map(
+                        question -> {
+                            try{
+                                return MyQuestionDto.builder()
+                                        .title(question.getTitle())
+                                        .questionId(question.getId())
+                                        .build();
+                            } catch (Exception e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+                ).toList();
+        MyQuestionListDto myQuestion = new MyQuestionListDto(
+                myQuestionList,
+                page,
+                size,
+                myPage.getTotalPages(),
+                myPage.getTotalElements()
+        );
+        return myQuestion;
+    }
+
 }

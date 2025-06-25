@@ -27,7 +27,7 @@ public class QuestionController {
     // 질문 생성
     @CrossOrigin()
     @PostMapping(value = "/questions/create")
-    public ApiResponseDto<Long> createQuestion (@RequestBody @Valid QuestionCreateDto questionCreateDto) throws AccessDeniedException {
+    public ApiResponseDto<Long> createQuestion(@RequestBody @Valid QuestionCreateDto questionCreateDto) throws AccessDeniedException {
         String userId = GatewayRequestHeaderUtils.getUserId();
         Long questionId = questionService.create(questionCreateDto, userId);
         return ApiResponseDto.createOk(questionId);
@@ -36,7 +36,7 @@ public class QuestionController {
     // 질문 수정
     @CrossOrigin()
     @PostMapping(value = "/questions/update")
-    public ApiResponseDto<QuestionDetailDto> updateQuestion (@RequestBody @Valid QuestionUpdateDto questionUpdateDto) throws AccessDeniedException, ChangeSetPersister.NotFoundException, JsonProcessingException {
+    public ApiResponseDto<QuestionDetailDto> updateQuestion(@RequestBody @Valid QuestionUpdateDto questionUpdateDto) throws AccessDeniedException, ChangeSetPersister.NotFoundException, JsonProcessingException {
         // TODO : GateWay , JWT 프로퍼티 맞추고 사용할 것
         String userId = GatewayRequestHeaderUtils.getUserId();
         questionService.update(questionUpdateDto, userId);
@@ -47,28 +47,27 @@ public class QuestionController {
     // 질문 삭제
     @CrossOrigin()
     @PostMapping(value = "/questions/delete")
-    public ApiResponseDto<String> deleteQuestion (@RequestBody Map<String, Long> payload) throws ChangeSetPersister.NotFoundException, AccessDeniedException {
+    public ApiResponseDto<String> deleteQuestion(@RequestBody Map<String, Long> payload) throws ChangeSetPersister.NotFoundException, AccessDeniedException {
         String userId = GatewayRequestHeaderUtils.getUserId();
         Long questionId = payload.get("questionId");
-        questionService.delete(questionId,userId);
+        questionService.delete(questionId, userId);
         return ApiResponseDto.createOk("게시글이 삭제됐습니다.");
     }
 
     // 질문 Overview
-    @CrossOrigin()
     @GetMapping(value = "/auth/questions")
     public ApiResponseDto<QuestionListDto> overviewQuestions (
             @RequestParam(value = "offset", defaultValue = "10") int size,
             @RequestParam(value = "page", defaultValue = "1") int page,
-            @RequestParam(value = "keyword",required = false) String keyword,
+            @RequestParam(value = "keyword", required = false) String keyword,
             @RequestParam(value = "sort", defaultValue = "updateAt") String sort,
             @RequestParam(value = "order", defaultValue = "desc") String order
     ) {
         QuestionListDto data;
         if (keyword == null || keyword.isBlank()) {
-            data = questionService.overview(page,size,keyword,sort,order);
+            data = questionService.overview(page, size, keyword, sort, order);
         } else {
-            data = questionService.search(page,size,keyword,sort,order);
+            data = questionService.search(page, size, keyword, sort, order);
         }
         return ApiResponseDto.createOk(data);
     }
@@ -80,5 +79,15 @@ public class QuestionController {
         String userId = GatewayRequestHeaderUtils.getUserId();
         QuestionDetailDto questionDetailDto = questionService.detail(questionId, userId);
         return ApiResponseDto.createOk(questionDetailDto);
+    }
+
+    @CrossOrigin()
+    @GetMapping(value = "/auth/questions/my")
+    public ApiResponseDto<MyQuestionListDto> viewMyQuestion(
+            @RequestParam(value = "offset", defaultValue = "10") int size,
+            @RequestParam(value = "page", defaultValue = "1") int page) {
+        String userId = GatewayRequestHeaderUtils.getUserId();
+        MyQuestionListDto data = questionService.myDetail(userId, page, size);
+        return ApiResponseDto.createOk(data);
     }
 }
