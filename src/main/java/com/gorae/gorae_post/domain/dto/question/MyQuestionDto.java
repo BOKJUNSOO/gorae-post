@@ -10,21 +10,12 @@ import java.util.Map;
 @Getter
 @Setter
 @Builder
-public class QuestionOverviewDto {
-
-    private String keyword;
-
+public class MyQuestionDto {
     private Long questionId;
-
-    private UserInfoDto userInfoDto;
 
     private String title;
 
+    private int viewCount;
+
     private int commentCount;
-
-    private Integer viewCount;
-
-    private Map<String,Object> previewContent;
-
-    private String writer;
 }
