@@ -85,15 +85,13 @@ public class QuestionService {
         // display True 인 question 만 인자로 받기 때문에 예외가 발생하지는 않는다.
         UserInfo userInfo = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFound(""));
-
-        UserInfoDto userInfoDto = UserInfoDto.builder()
-                .userId(userInfo.getUserId())
-                .userName(userInfo.getUserName())
-                .profileImgUrl(userInfo.getProfileImgUrl())
-                .userBadge(userInfo.getUserBadge())
-                .likeBadge(userInfo.getLikeBadge())
-                .build();
-
+        UserInfoDto userInfoDto =UserInfoDto.builder()
+                    .userId(userInfo.getUserId())
+                    .userName(userInfo.getUserName())
+                    .profileImgUrl(userInfo.getProfileImgUrl())
+                    .userBadge(userInfo.getUserBadge())
+                    .likeBadge(userInfo.getLikeBadge())
+                    .build();
         // Question Entity class 인스턴스를 질문 미리보기 타입으로 변경해주는 함수
         return QuestionOverviewDto.builder()
                 .keyword(keyword == null ? "" : keyword)
