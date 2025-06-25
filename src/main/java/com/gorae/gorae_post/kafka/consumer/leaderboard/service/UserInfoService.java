@@ -21,6 +21,6 @@ public class UserInfoService {
         UserInfo userInfo = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFound("존재하지 않는 사용자입니다."));
         userInfo.setUserBadge(event.getUserBadge());
-//        TODO: userINfo.setLikeBadge에 event.getLikeBadge();추가
+        userInfo.setLikeBadge(event.getLikeBadge());
     }
 }
