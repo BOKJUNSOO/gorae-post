@@ -18,6 +18,7 @@ import com.gorae.gorae_post.kafka.producer.KafkaMessageProducer;
 import com.gorae.gorae_post.kafka.producer.alim.dto.AdoptNotificationEvent;
 import com.gorae.gorae_post.kafka.producer.alim.dto.CommentNotificationEvent;
 import com.gorae.gorae_post.kafka.producer.leaderboard.dto.AdoptCommentStatusEvent;
+import com.gorae.gorae_post.kafka.producer.leaderboard.dto.CommentEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -106,6 +107,8 @@ public class CommentService {
                 .build();
         CommentNotificationEvent event = CommentNotificationEvent.fromEntity(savedComment);
         kafkaMessageProducer.send("comment-notification", event);
+        CommentEvent createCommentEvent = CommentEvent.fromEntity(savedComment);
+        kafkaMessageProducer.send("comment-produce",createCommentEvent);
         return CommentCreateDto.builder()
                 .questionId(savedComment.getQuestion().getId())
                 .commentContent(mapCommentContent(savedComment.getCommentContent()))
