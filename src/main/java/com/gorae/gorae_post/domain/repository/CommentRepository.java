@@ -16,4 +16,6 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
 
     @Query("SELECT COUNT(c) FROM Comment c WHERE c.question.id = :questionId AND c.adopt = true")
     int getCommentAdoptExisted(@Param("questionId") Long question_id);
+
+    boolean existsByQuestionIdAndAdoptIsTrue(Long questionId);
 }

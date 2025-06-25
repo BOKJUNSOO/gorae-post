@@ -40,6 +40,7 @@ public class LikeService {
         Optional<Like> existLike = likeRepository.findByUserInfoAndComment(userInfo, comment);
 
         if (existLike.isPresent()) {
+//            TODO: EXCEPTION으로 로그 확인 해봐야됨
             Like delete = existLike.get();
             likeRepository.deleteById(delete.getId());
             comment.decreaseLikeCount();

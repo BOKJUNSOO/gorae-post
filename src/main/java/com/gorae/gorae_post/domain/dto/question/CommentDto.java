@@ -23,4 +23,8 @@ public class CommentDto {
     private boolean adopt;
 
     private UserInfoDto userInfoDto;
+
+    private boolean isAuthor = false;
+
+    private boolean canAdopt = false;
 }

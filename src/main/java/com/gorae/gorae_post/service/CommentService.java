@@ -49,20 +49,38 @@ public class CommentService {
     }
 
     @Transactional(readOnly = true)
-    public PageResponseDto<CommentDto> commentView(Long questionId, Pageable pageable) {
+    public PageResponseDto<CommentDto> commentView(Long questionId, Pageable pageable, String userId) {
         Sort fixedSort = Sort.by(Sort.Direction.DESC, "adopt")
                 .and(Sort.by(Sort.Direction.ASC, "createAt"));
+        boolean commentAdopted = commentRepository.existsByQuestionIdAndAdoptIsTrue(questionId);
+        Question question = questionRepository.findById(questionId)
+                .orElseThrow(() -> new NotFound("존재하지 않거나 삭제된 글입니다."));
         Pageable finalPageable = PageRequest.of(pageable.getPageNumber()-1, pageable.getPageSize(), fixedSort);
         Page<Comment> commentPage = commentRepository.findByQuestionIdWithUser(questionId, finalPageable);
         List<CommentDto> dtoList = commentPage.getContent().stream()
                 .map(comment ->{
                     try {
+                        boolean isAdopted = comment.isAdopt();
+
+//                        1. 질문에 아직 채택된 답변이 없고
+//                        2. 현재 로그인 한 사용자가 작성자 본인
+//                        3. 댓글이 아직 채택되지 않은 상태일 때
+                        boolean canAdopt = !commentAdopted && (userId.equals(question.getUserId()))
+                                && !isAdopted;
+                        boolean isAuthor = false;
+                        if(userId != null && comment.getUserInfo().getUserId().equals(userId)){
+                            isAuthor = true;
+                        }
+
+
                         return  CommentDto.builder()
                                   .commentId(comment.getId())
                                   .commentContent(mapCommentContent(comment.getCommentContent()))
                                   .likeCount(comment.getLikeCount())
                                   .adopt(comment.isAdopt())
                                   .updateAt(comment.getUpdateAt())
+                                  .isAuthor(isAuthor)
+                                  .canAdopt(canAdopt)
                                   .userInfoDto(UserInfoDto.fromEntity(comment.getUserInfo()))
                                   .build();
                     } catch (JsonProcessingException e) {

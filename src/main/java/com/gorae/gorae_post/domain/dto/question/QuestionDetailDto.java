@@ -28,4 +28,6 @@ public class QuestionDetailDto {
 
     private int viewCount;
 
+    private boolean isAuthor= false;
+
 }
