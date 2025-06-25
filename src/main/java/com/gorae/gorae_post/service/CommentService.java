@@ -49,7 +49,7 @@ public class CommentService {
     }
 
     @Transactional(readOnly = true)
-    public PageResponseDto<CommentDto> commentView(Long questionId, Pageable pageable) {
+    public PageResponseDto<CommentDto> commentView(Long questionId, Pageable pageable, String userId) {
         Sort fixedSort = Sort.by(Sort.Direction.DESC, "adopt")
                 .and(Sort.by(Sort.Direction.ASC, "createAt"));
         Pageable finalPageable = PageRequest.of(pageable.getPageNumber()-1, pageable.getPageSize(), fixedSort);
@@ -57,12 +57,17 @@ public class CommentService {
         List<CommentDto> dtoList = commentPage.getContent().stream()
                 .map(comment ->{
                     try {
+                        boolean isAuthor = false;
+                        if(userId != null && comment.getUserInfo().getUserId().equals(userId)){
+                            isAuthor = true;
+                        }
                         return  CommentDto.builder()
                                   .commentId(comment.getId())
                                   .commentContent(mapCommentContent(comment.getCommentContent()))
                                   .likeCount(comment.getLikeCount())
                                   .adopt(comment.isAdopt())
                                   .updateAt(comment.getUpdateAt())
+                                  .isAuthor(isAuthor)
                                   .userInfoDto(UserInfoDto.fromEntity(comment.getUserInfo()))
                                   .build();
                     } catch (JsonProcessingException e) {
@@ -81,7 +86,6 @@ public class CommentService {
                 () -> new NotFound("로그인이 필요한 서비스입니다.")
         );
         Comment create = commentCreateDto.toEntity(userInfo, question);
-        create.setIsAuthor(true);
         Comment savedComment = commentRepository.save(create);
         UserInfoDto userInfoDto =UserInfoDto.builder()
                 .userId(userInfo.getUserId())

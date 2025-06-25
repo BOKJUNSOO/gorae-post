@@ -73,7 +73,8 @@ public class CommentController {
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "5") int offset) {
         Pageable pageable = PageRequest.of(page, offset);
-        PageResponseDto<CommentDto> response = commentService.commentView(questionId, pageable);
+        String userId = GatewayRequestHeaderUtils.getUserId();
+        PageResponseDto<CommentDto> response = commentService.commentView(questionId, pageable, userId);
         return ApiResponseDto.createOk(response);
     }
 }
