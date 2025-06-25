@@ -30,7 +30,6 @@ public class CommentController {
     private final CommentService commentService;
 
     // 답변 생성 및 수정
-    @CrossOrigin()
     @PostMapping(value = "/questions/answer/create")
     public ApiResponseDto<CommentCreateDto> createComment(@RequestBody @Valid CommentCreateDto commentCreateDto) throws JsonProcessingException {
 //        TODO: @AuthenticaionPrincipal로  userId 받아오기
@@ -39,7 +38,6 @@ public class CommentController {
         return ApiResponseDto.createOk(commentContent);
     }
 
-    @CrossOrigin()
     @PostMapping(value = "/questions/answer/update")
     public ApiResponseDto<CommentUpdateDto> updateComment(@RequestBody CommentUpdateDto commentUpdateDto) throws AccessDeniedException, JsonProcessingException {
         String userId = GatewayRequestHeaderUtils.getUserId();
@@ -47,7 +45,6 @@ public class CommentController {
         return ApiResponseDto.createOk(updateDate);
     }
 
-    @CrossOrigin()
     @PostMapping(value = "/questions/answer/delete")
     public ApiResponseDto<String> deleteComment(@RequestBody Map<String, Long> payload) throws AccessDeniedException {
         String userId = GatewayRequestHeaderUtils.getUserId();
@@ -56,7 +53,6 @@ public class CommentController {
         return ApiResponseDto.createOk("삭제가 완료되었습니다");
     }
 
-    @CrossOrigin()
     @PostMapping(value = "/questions/answer/adopt")
     public ApiResponseDto<Long> adoptComment(@RequestBody CommentAdoptDto commentAdoptDto) throws AccessDeniedException {
         String userId = GatewayRequestHeaderUtils.getUserId();
@@ -66,7 +62,6 @@ public class CommentController {
 
     // 답변 상세 조회
     // 답변에 대한 댓글을 위해서라면 필요
-    @CrossOrigin()
     @GetMapping(value = "/auth/comments/detail")
     public ApiResponseDto<PageResponseDto<CommentDto>> viewComment(
             @RequestParam(value = "questionId") Long questionId,

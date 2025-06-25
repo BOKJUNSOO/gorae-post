@@ -25,7 +25,6 @@ public class QuestionController {
 
 
     // 질문 생성
-    @CrossOrigin()
     @PostMapping(value = "/questions/create")
     public ApiResponseDto<Long> createQuestion (@RequestBody @Valid QuestionCreateDto questionCreateDto){
         String userId = GatewayRequestHeaderUtils.getUserId();
@@ -34,7 +33,6 @@ public class QuestionController {
     }
 
     // 질문 수정
-    @CrossOrigin()
     @PostMapping(value = "/questions/update")
     public ApiResponseDto<QuestionDetailDto> updateQuestion (@RequestBody @Valid QuestionUpdateDto questionUpdateDto) throws AccessDeniedException, ChangeSetPersister.NotFoundException, JsonProcessingException {
         // TODO : GateWay , JWT 프로퍼티 맞추고 사용할 것
@@ -45,7 +43,6 @@ public class QuestionController {
     }
 
     // 질문 삭제
-    @CrossOrigin()
     @PostMapping(value = "/questions/delete")
     public ApiResponseDto<String> deleteQuestion (@RequestBody Map<String, Long> payload) throws ChangeSetPersister.NotFoundException, AccessDeniedException {
         String userId = GatewayRequestHeaderUtils.getUserId();
@@ -55,7 +52,6 @@ public class QuestionController {
     }
 
     // 질문 Overview
-    @CrossOrigin()
     @GetMapping(value = "/auth/questions")
     public ApiResponseDto<QuestionListDto> overviewQuestions (
             @RequestParam(value = "offset", defaultValue = "10") int size,
@@ -74,7 +70,6 @@ public class QuestionController {
     }
 
     // 질문 상세 조회
-    @CrossOrigin()
     @GetMapping(value = "/auth/questions/detail")
     public ApiResponseDto<QuestionDetailDto> viewQuestion (@RequestParam(value = "questionId") Long questionId) throws ChangeSetPersister.NotFoundException, JsonProcessingException {
         QuestionDetailDto questionDetailDto = questionService.detail(questionId);
