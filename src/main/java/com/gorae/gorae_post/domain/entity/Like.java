@@ -21,10 +21,14 @@ public class Like {
     @JoinColumn(name = "comment_id", nullable = false)
     Comment comment;
 
+    @Column(nullable = false)
+    Boolean likeStatus = false;
+
     @Builder
-    public Like (UserInfo userInfo, Comment comment){
+    public Like (UserInfo userInfo, Comment comment, Boolean likeStatus){
         this.userInfo = userInfo;
         this.comment = comment;
+        this.likeStatus = likeStatus;
     }
 
 }

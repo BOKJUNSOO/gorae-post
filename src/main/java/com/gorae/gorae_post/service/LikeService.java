@@ -39,29 +39,22 @@ public class LikeService {
 //      like 조회
         Optional<Like> existLike = likeRepository.findByUserInfoAndComment(userInfo, comment);
 
+//        like가 존재하면 -> likeStatus는 true일 거니까
         if (existLike.isPresent()) {
-//            TODO: EXCEPTION으로 로그 확인 해봐야됨
-            Like delete = existLike.get();
-            likeRepository.deleteById(delete.getId());
-            comment.decreaseLikeCount();
-//           좋아요 취소 카프카 이벤트
-            LikeCommentStatusEvent cancelEvent = LikeCommentStatusEvent.fromEntityCancel(delete);
-            kafkaMessageProducer.send("like-comment-status", delete);
-            return comment.getLikeCount();
+            Like like = existLike.get();
+            return like.getComment().getLikeCount();
         } else {
             Like like = Like.builder().
                     userInfo(userInfo).
                     comment(comment).
+                    likeStatus(true).
                     build();
             likeRepository.save(like);
             comment.increaseLikeCount();
 //          좋아요 카프카 이벤트
             LikeCommentStatusEvent likeEvent = LikeCommentStatusEvent.fromEntityLike(like);
             kafkaMessageProducer.send("like-comment-status", likeEvent);
-//            좋아요 알림 이벤트
-            LikedNotificationEvent notiEvent = LikedNotificationEvent.fromEntity(like);
-            kafkaMessageProducer.send("liked-notification", notiEvent);
-            return comment.getLikeCount();
+            return like.getComment().getLikeCount();
         }
     }
 }
