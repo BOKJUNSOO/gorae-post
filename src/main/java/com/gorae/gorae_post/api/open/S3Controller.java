@@ -24,7 +24,6 @@ public class S3Controller {
 
     private final S3Service s3Service;
 
-    @CrossOrigin()
     @PostMapping(value = "/image")
     public ApiResponseDto<String> imageLoad(@RequestPart(value = "image") MultipartFile multipartFile) throws IOException {
         String imageUrl = s3Service.uploadFile(multipartFile, "");
