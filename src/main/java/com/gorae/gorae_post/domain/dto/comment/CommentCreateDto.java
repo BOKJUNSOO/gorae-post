@@ -32,6 +32,8 @@ public class CommentCreateDto {
 
     private LocalDateTime createAt;
 
+    private Boolean isAuthor = false;
+
     public Comment toEntity(UserInfo userInfo, Question question) {
         Comment comment = new Comment();
         comment.setUserInfo(userInfo);

@@ -27,7 +27,7 @@ public class QuestionController {
     // 질문 생성
     @CrossOrigin()
     @PostMapping(value = "/questions/create")
-    public ApiResponseDto<Long> createQuestion (@RequestBody @Valid QuestionCreateDto questionCreateDto){
+    public ApiResponseDto<Long> createQuestion (@RequestBody @Valid QuestionCreateDto questionCreateDto) throws AccessDeniedException {
         String userId = GatewayRequestHeaderUtils.getUserId();
         Long questionId = questionService.create(questionCreateDto, userId);
         return ApiResponseDto.createOk(questionId);

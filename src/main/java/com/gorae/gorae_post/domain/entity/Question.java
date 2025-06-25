@@ -39,4 +39,7 @@ public class Question {
 
     @Column
     private Boolean display = true;
+
+    @Column
+    private Boolean isAuthor = false;
 }

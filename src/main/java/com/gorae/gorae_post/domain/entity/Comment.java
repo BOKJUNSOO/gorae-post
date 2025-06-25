@@ -38,6 +38,9 @@ public class Comment {
     @Column(name = "comment_adopt", nullable = false)
     private boolean adopt;
 
+    @Column
+    private Boolean isAuthor = false;
+
     @JsonIgnore
     @ManyToOne(targetEntity = Question.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "questionId", referencedColumnName = "id",nullable = true)

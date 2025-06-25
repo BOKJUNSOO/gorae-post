@@ -40,8 +40,11 @@ public class QuestionService {
     }
 
     @Transactional
-    public Long create(QuestionCreateDto questionCreateDto, String userId) {
+    public Long create(QuestionCreateDto questionCreateDto, String userId) throws AccessDeniedException {
         Question question = questionCreateDto.toEntity(userId);
+        UserInfo userInfo = userRepository.findById(userId)
+                        .orElseThrow(() -> new AccessDeniedException("인증되지 않았습니다."));
+        question.setIsAuthor(true);
         questionRepository.save(question);
         return question.getId();
     }
@@ -207,6 +210,7 @@ public class QuestionService {
                 .userInfo(userInfoDto)
                 .updateAt(question.getUpdateAt())
                 .viewCount(question.getViewCount())
+                .isAuthor(question.getIsAuthor())
                 .build();
     }
 }

@@ -81,6 +81,7 @@ public class CommentService {
                 () -> new NotFound("로그인이 필요한 서비스입니다.")
         );
         Comment create = commentCreateDto.toEntity(userInfo, question);
+        create.setIsAuthor(true);
         Comment savedComment = commentRepository.save(create);
         UserInfoDto userInfoDto =UserInfoDto.builder()
                 .userId(userInfo.getUserId())
@@ -97,6 +98,7 @@ public class CommentService {
                 .createAt(savedComment.getCreateAt())
                 .adopt(savedComment.isAdopt())
                 .likeCount(savedComment.getLikeCount())
+                .isAuthor(savedComment.getIsAuthor())
                 .userInfo(userInfoDto)
                 .build();
     }
