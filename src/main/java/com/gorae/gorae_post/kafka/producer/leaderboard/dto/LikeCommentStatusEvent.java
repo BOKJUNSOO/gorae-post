@@ -27,8 +27,8 @@ public class LikeCommentStatusEvent {
 
     public static LikeCommentStatusEvent fromEntityCancel(Like like){
         LikeCommentStatusEvent event = new LikeCommentStatusEvent();
-        event.setAction("취소");
-        event.setCommentLikeUserId(like.getUserInfo().getUserId());
+        event.setAction("싫어요");
+        event.setCommentLikeUserId(like.getComment().getUserInfo().getUserId());
         Long cancelEvent = like.getComment().getId();
         event.setCommentId(String.valueOf(cancelEvent));
         return event;

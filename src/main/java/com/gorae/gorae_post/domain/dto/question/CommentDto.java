@@ -27,4 +27,5 @@ public class CommentDto {
     private boolean isAuthor = false;
 
     private boolean canAdopt = false;
+    private boolean likeStatus;
 }

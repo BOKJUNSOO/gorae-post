@@ -12,6 +12,7 @@ import com.gorae.gorae_post.domain.entity.Question;
 import com.gorae.gorae_post.domain.entity.UserInfo;
 import com.gorae.gorae_post.domain.dto.user.UserInfoDto;
 import com.gorae.gorae_post.domain.repository.CommentRepository;
+import com.gorae.gorae_post.domain.repository.LikeRepository;
 import com.gorae.gorae_post.domain.repository.QuestionRepository;
 import com.gorae.gorae_post.domain.repository.UserRepository;
 import com.gorae.gorae_post.kafka.producer.KafkaMessageProducer;
@@ -30,8 +31,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -41,12 +44,14 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final QuestionRepository questionRepository;
     private final UserRepository userRepository;
+    private final LikeRepository likeRepository;
     private final KafkaMessageProducer kafkaMessageProducer;
 
     @Transactional
-    public Map<String,Object> mapCommentContent(String commentContentJson) throws JsonProcessingException {
+    public Map<String, Object> mapCommentContent(String commentContentJson) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
-        return mapper.readValue(commentContentJson, new TypeReference<>() {});
+        return mapper.readValue(commentContentJson, new TypeReference<>() {
+        });
     }
 
     @Transactional(readOnly = true)
@@ -56,37 +61,40 @@ public class CommentService {
         boolean commentAdopted = commentRepository.existsByQuestionIdAndAdoptIsTrue(questionId);
         Question question = questionRepository.findById(questionId)
                 .orElseThrow(() -> new NotFound("존재하지 않거나 삭제된 글입니다."));
-        Pageable finalPageable = PageRequest.of(pageable.getPageNumber()-1, pageable.getPageSize(), fixedSort);
+        Pageable finalPageable = PageRequest.of(pageable.getPageNumber() - 1, pageable.getPageSize(), fixedSort);
         Page<Comment> commentPage = commentRepository.findByQuestionIdWithUser(questionId, finalPageable);
         List<CommentDto> dtoList = commentPage.getContent().stream()
-                .map(comment ->{
+                .map(comment -> {
                     try {
+                        boolean likeStatus = false;
+                        if (userId != null) {
+                            likeStatus = likeRepository.existsByCommentIdAndUserInfo_UserIdAndLikeStatusIsTrue(comment.getId(), userId);
+                        }
                         boolean isAuthor = false;
-                        if(userId != null && comment.getUserInfo().getUserId().equals(userId)){
+                        if (userId != null && comment.getUserInfo().getUserId().equals(userId)) {
                             isAuthor = true;
                         }
                         boolean isAdopted = comment.isAdopt();
-//                        1. 질문에 아직 채택된 답변이 없고
-//                        2. 현재 로그인 한 사용자가 작성자 본인
-//                        3. 댓글이 아직 채택되지 않은 상태일 때
                         boolean canAdopt = !commentAdopted && (userId != null && userId.equals(question.getUserId()))
                                 && !isAdopted;
-                        return  CommentDto.builder()
-                                  .commentId(comment.getId())
-                                  .commentContent(mapCommentContent(comment.getCommentContent()))
-                                  .likeCount(comment.getLikeCount())
-                                  .adopt(comment.isAdopt())
-                                  .updateAt(comment.getUpdateAt())
-                                  .isAuthor(isAuthor)
-                                  .canAdopt(canAdopt)
-                                  .userInfoDto(UserInfoDto.fromEntity(comment.getUserInfo()))
-                                  .build();
+                        return CommentDto.builder()
+                                .commentId(comment.getId())
+                                .commentContent(mapCommentContent(comment.getCommentContent()))
+                                .likeCount(comment.getLikeCount())
+                                .adopt(comment.isAdopt())
+                                .updateAt(comment.getUpdateAt())
+                                .isAuthor(isAuthor)
+                                .canAdopt(canAdopt)
+                                .likeStatus(likeStatus)
+                                .userInfoDto(UserInfoDto.fromEntity(comment.getUserInfo()))
+                                .build();
                     } catch (JsonProcessingException e) {
                         throw new RuntimeException(e);
                     }
                 }).collect(Collectors.toList());
         return new PageResponseDto<>(commentPage, dtoList);
     }
+
     // 답변 생성
     @Transactional
     public CommentCreateDto createComment(CommentCreateDto commentCreateDto, String userId) throws JsonProcessingException {
@@ -98,7 +106,7 @@ public class CommentService {
         );
         Comment create = commentCreateDto.toEntity(userInfo, question);
         Comment savedComment = commentRepository.save(create);
-        UserInfoDto userInfoDto =UserInfoDto.builder()
+        UserInfoDto userInfoDto = UserInfoDto.builder()
                 .userId(userInfo.getUserId())
                 .userName(userInfo.getUserName())
                 .profileImgUrl(userInfo.getProfileImgUrl())
@@ -108,7 +116,7 @@ public class CommentService {
         CommentNotificationEvent event = CommentNotificationEvent.fromEntity(savedComment);
         kafkaMessageProducer.send("comment-notification", event);
         CommentEvent createCommentEvent = CommentEvent.fromEntity(savedComment);
-        kafkaMessageProducer.send("comment-produce",createCommentEvent);
+        kafkaMessageProducer.send("comment-produce", createCommentEvent);
         return CommentCreateDto.builder()
                 .questionId(savedComment.getQuestion().getId())
                 .commentContent(mapCommentContent(savedComment.getCommentContent()))
@@ -136,7 +144,7 @@ public class CommentService {
         comment.setCommentContent(mapper.writeValueAsString(commentUpdateDto.getCommentContent()));
         comment.setUpdateAt(LocalDateTime.now());
 
-        UserInfoDto userInfoDto =UserInfoDto.builder()
+        UserInfoDto userInfoDto = UserInfoDto.builder()
                 .userId(userInfo.getUserId())
                 .userName(userInfo.getUserName())
                 .profileImgUrl(userInfo.getProfileImgUrl())
@@ -191,7 +199,7 @@ public class CommentService {
         kafkaMessageProducer.send("adopt-notification", notificationEvent);
 //        채택 카프카 리더보드 이벤트
         AdoptCommentStatusEvent leaderEvent = AdoptCommentStatusEvent.fromEntity(comment);
-        kafkaMessageProducer.send("adopt-comment-status",leaderEvent);
+        kafkaMessageProducer.send("adopt-comment-status", leaderEvent);
         return comment.getId();
     }
 }
