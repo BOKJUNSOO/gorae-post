@@ -15,4 +15,7 @@ public class MyQuestionDto {
 
     private String title;
 
+    private int viewCount;
+
+    private int commentCount;
 }

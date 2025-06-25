@@ -5,9 +5,11 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gorae.gorae_post.common.exception.NotFound;
 import com.gorae.gorae_post.domain.dto.question.*;
+import com.gorae.gorae_post.domain.entity.Comment;
 import com.gorae.gorae_post.domain.entity.Question;
 import com.gorae.gorae_post.domain.entity.UserInfo;
 import com.gorae.gorae_post.domain.dto.user.UserInfoDto;
+import com.gorae.gorae_post.domain.repository.CommentRepository;
 import com.gorae.gorae_post.domain.repository.QuestionRepository;
 import com.gorae.gorae_post.domain.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +33,7 @@ public class QuestionService {
 
     private final QuestionRepository questionRepository;
     private final UserRepository userRepository;
+    private final CommentRepository commentRepository;
 
     @Transactional
     public Map<String, Object> mapContent(String contentJson) throws JsonProcessingException {
@@ -81,7 +84,10 @@ public class QuestionService {
 
     private QuestionOverviewDto convertOverviewDto(Question question, String keyword) throws JsonProcessingException {
         String userId = question.getUserId();
+        Long questionId =  question.getId();
+        List<Comment> commentList = commentRepository.findAllByQuestionId(questionId);
 
+        int commentCount = commentList.size();
         // display True 인 question 만 인자로 받기 때문에 예외가 발생하지는 않는다.
         UserInfo userInfo = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFound(""));
@@ -97,6 +103,8 @@ public class QuestionService {
                 .keyword(keyword == null ? "" : keyword)
                 .questionId(question.getId())
                 .userInfoDto(userInfoDto)
+                .viewCount(question.getViewCount())
+                .commentCount(commentCount)
                 .title(question.getTitle())
                 .previewContent(mapContent(question.getContentJson()))
                 .writer(question.getUserId())
@@ -219,35 +227,37 @@ public class QuestionService {
                 .build();
     }
 
-    @Transactional
-    public MyQuestionListDto myDetail(String userId, int page, int size) {
-        Pageable pageable = PageRequest.of(page - 1, size);
-        UserInfo userInfo = userRepository.findById(userId)
-                .orElseThrow(() -> new NotFound("로그인이 필요한 서비스입니다."));
-        Page<Question> myPage = questionRepository.findByUserIdAndDisplayTrue(userInfo.getUserId(), pageable);
-
-        List<MyQuestionDto> myQuestionList = myPage.getContent()
-                .stream()
-                .map(
-                        question -> {
-                            try{
-                                return MyQuestionDto.builder()
-                                        .title(question.getTitle())
-                                        .questionId(question.getId())
-                                        .build();
-                            } catch (Exception e) {
-                                throw new RuntimeException(e);
-                            }
-                        }
-                ).toList();
-        MyQuestionListDto myQuestion = new MyQuestionListDto(
-                myQuestionList,
-                page,
-                size,
-                myPage.getTotalPages(),
-                myPage.getTotalElements()
-        );
-        return myQuestion;
-    }
+//    @Transactional
+//    public MyQuestionListDto myDetail(String userId, int page, int size) {
+//        Pageable pageable = PageRequest.of(page - 1, size);
+//        UserInfo userInfo = userRepository.findById(userId)
+//                .orElseThrow(() -> new NotFound("로그인이 필요한 서비스입니다."));
+//        Page<Question> myPage = questionRepository.findByUserIdAndDisplayTrue(userInfo.getUserId(), pageable);
+//
+//        List<MyQuestionDto> myQuestionList = myPage.getContent()
+//                .stream()
+//                .map(
+//                        question -> {
+//                            try{
+//                                return MyQuestionDto.builder()
+//                                        .title(question.getTitle())
+//                                        .questionId(question.getId())
+//                                        .viewCount(question.getViewCount())
+//                                        .commentCount()
+//                                        .build();
+//                            } catch (Exception e) {
+//                                throw new RuntimeException(e);
+//                            }
+//                        }
+//                ).toList();
+//        MyQuestionListDto myQuestion = new MyQuestionListDto(
+//                myQuestionList,
+//                page,
+//                size,
+//                myPage.getTotalPages(),
+//                myPage.getTotalElements()
+//        );
+//        return myQuestion;
+    //}
 
 }

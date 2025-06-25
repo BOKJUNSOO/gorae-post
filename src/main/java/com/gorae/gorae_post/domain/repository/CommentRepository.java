@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, Long> {
     @Query(value = "SELECT c FROM Comment c JOIN FETCH c.userInfo WHERE c.question.id = :questionId",
@@ -18,4 +20,6 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     int getCommentAdoptExisted(@Param("questionId") Long question_id);
 
     boolean existsByQuestionIdAndAdoptIsTrue(Long questionId);
+
+    List<Comment> findAllByQuestionId(Long questionId);
 }
