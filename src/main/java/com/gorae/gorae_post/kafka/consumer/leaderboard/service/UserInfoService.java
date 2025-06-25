@@ -1,12 +1,26 @@
 package com.gorae.gorae_post.kafka.consumer.leaderboard.service;
 
+import com.gorae.gorae_post.common.exception.NotFound;
+import com.gorae.gorae_post.domain.entity.UserInfo;
+import com.gorae.gorae_post.domain.repository.UserRepository;
+import com.gorae.gorae_post.kafka.consumer.leaderboard.dto.UserStatusEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserInfoService {
-    // TODO : 뱃지 정보를 갱신시키는 repository + service 로직
+    private final UserRepository userRepository;
+
+    @Transactional
+    public void ChangeBadge(UserStatusEvent event){
+        String userId = event.getUserId();
+        UserInfo userInfo = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFound("존재하지 않는 사용자입니다."));
+        userInfo.setUserBadge(event.getUserBadge());
+//        TODO: userINfo.setLikeBadge에 event.getLikeBadge();추가
+    }
 }

@@ -12,4 +12,6 @@ public class UserStatusEvent {
     private String userId;
 
     private String userBadge;
+
+    private String likeBadge;
 }

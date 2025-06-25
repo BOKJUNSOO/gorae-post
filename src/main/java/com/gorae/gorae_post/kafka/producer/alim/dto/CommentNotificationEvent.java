@@ -1,6 +1,7 @@
 package com.gorae.gorae_post.kafka.producer.alim.dto;
 
 
+import com.gorae.gorae_post.domain.entity.Comment;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,4 +17,12 @@ public class CommentNotificationEvent {
     private String commentContent;
     private LocalDateTime eventTime;
 
+    public static CommentNotificationEvent fromEntity(Comment comment){
+        CommentNotificationEvent event = new CommentNotificationEvent();
+        event.setCommentUserId(comment.getUserInfo().getUserId());
+        event.setPostUserId(comment.getQuestion().getUserId());
+        event.setCommentContent(comment.getCommentContent());
+        event.setEventTime(comment.getCreateAt());
+        return event;
+    }
 }

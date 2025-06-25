@@ -12,16 +12,25 @@ import lombok.Setter;
 public class LikeCommentStatusEvent {
     public static final String TOPIC = "like-comment-status";
 
-    private String postId; // 게시글의 유저
     private String commentLikeUserId; // 좋아요를 누른사람
-    private String commentUserId; // 좋아요를 눌려진 댓글
+    private String commentId; // 좋아요를 눌려진 댓글
+    private String action; // 좋아요 , 취소롤 액션 나눔
 
-    public static LikeCommentStatusEvent fromEntity(Like like){
+    public static LikeCommentStatusEvent fromEntityLike(Like like){
         LikeCommentStatusEvent event = new LikeCommentStatusEvent();
-        Long postId = like.getComment().getQuestion().getId();
-        event.setPostId(String.valueOf(postId));
+        event.setAction("좋아요");
         event.setCommentLikeUserId(like.getUserInfo().getUserId());
-        event.setCommentUserId(like.getComment().getUserInfo().getUserId());
+        Long likeEvent = like.getComment().getId();
+        event.setCommentId(String.valueOf(likeEvent));
+        return event;
+    }
+
+    public static LikeCommentStatusEvent fromEntityCancel(Like like){
+        LikeCommentStatusEvent event = new LikeCommentStatusEvent();
+        event.setAction("취소");
+        event.setCommentLikeUserId(like.getUserInfo().getUserId());
+        Long cancelEvent = like.getComment().getId();
+        event.setCommentId(String.valueOf(cancelEvent));
         return event;
     }
 }
