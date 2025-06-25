@@ -56,7 +56,7 @@ public class QuestionController {
 
     // 질문 Overview
     @CrossOrigin()
-    @GetMapping(value = "/questions")
+    @GetMapping(value = "/auth//questions")
     public ApiResponseDto<QuestionListDto> overviewQuestions(
             @RequestParam(value = "offset", defaultValue = "10") int size,
             @RequestParam(value = "page", defaultValue = "1") int page,
@@ -75,7 +75,7 @@ public class QuestionController {
 
     // 질문 상세 조회
     @CrossOrigin()
-    @GetMapping(value = "/questions/detail")
+    @GetMapping(value = "/auth//questions/detail")
     public ApiResponseDto<QuestionDetailDto> viewQuestion(@RequestParam(value = "questionId") Long questionId) throws ChangeSetPersister.NotFoundException, JsonProcessingException {
         String userId = GatewayRequestHeaderUtils.getUserId();
         QuestionDetailDto questionDetailDto = questionService.detail(questionId, userId);
@@ -83,7 +83,7 @@ public class QuestionController {
     }
 
     @CrossOrigin()
-    @GetMapping(value = "/questions/my")
+    @GetMapping(value = "/auth/questions/my")
     public ApiResponseDto<MyQuestionListDto> viewMyQuestion(
             @RequestParam(value = "offset", defaultValue = "10") int size,
             @RequestParam(value = "page", defaultValue = "1") int page) {

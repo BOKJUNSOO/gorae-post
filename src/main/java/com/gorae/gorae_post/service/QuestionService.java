@@ -91,6 +91,7 @@ public class QuestionService {
                 .userName(userInfo.getUserName())
                 .profileImgUrl(userInfo.getProfileImgUrl())
                 .userBadge(userInfo.getUserBadge())
+                .likeBadge(userInfo.getLikeBadge())
                 .build();
 
         // Question Entity class 인스턴스를 질문 미리보기 타입으로 변경해주는 함수
@@ -224,7 +225,7 @@ public class QuestionService {
     public MyQuestionListDto myDetail(String userId, int page, int size) {
         Pageable pageable = PageRequest.of(page - 1, size);
         UserInfo userInfo = userRepository.findById(userId)
-                .orElseThrow(() -> new NotFound("사용자가 없습니다."));
+                .orElseThrow(() -> new NotFound("로그인이 필요한 서비스입니다."));
         Page<Question> myPage = questionRepository.findByUserIdAndDisplayTrue(userInfo.getUserId(), pageable);
 
         List<MyQuestionDto> myQuestionList = myPage.getContent()
