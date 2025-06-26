@@ -62,7 +62,7 @@ public class LikeService {
 
             LikeCommentStatusEvent likeEvent = LikeCommentStatusEvent.fromEntityLike(likeEntity);
             kafkaMessageProducer.send("like-comment-status", likeEvent);
-            return like.getComment().getLikeCount();
+            return like.getComment().getId();
         }
     }
 }
