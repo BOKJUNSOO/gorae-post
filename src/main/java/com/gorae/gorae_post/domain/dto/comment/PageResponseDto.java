@@ -15,12 +15,14 @@ public class PageResponseDto<T> {
     private int offset;
     private int totalPages;
     private long totalElements;
+    private boolean isAdopted;
 
-    public PageResponseDto(Page<?> page, List<T> content) {
+    public PageResponseDto(Page<?> page, List<T> content, boolean hasAdopted) {
         this.content = content;
         this.page = page.getNumber()+1;
         this.offset = page.getSize();
         this.totalPages = page.getTotalPages();
         this.totalElements = page.getTotalElements();
+        this.isAdopted = hasAdopted;
     }
 }

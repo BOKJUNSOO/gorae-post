@@ -22,4 +22,6 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     boolean existsByQuestionIdAndAdoptIsTrue(Long questionId);
 
     List<Comment> findAllByQuestionId(Long questionId);
+
+    List<Comment> findByQuestionId(Long questionId);
 }

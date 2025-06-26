@@ -63,6 +63,11 @@ public class CommentService {
                 .orElseThrow(() -> new NotFound("존재하지 않거나 삭제된 글입니다."));
         Pageable finalPageable = PageRequest.of(pageable.getPageNumber() - 1, pageable.getPageSize(), fixedSort);
         Page<Comment> commentPage = commentRepository.findByQuestionIdWithUser(questionId, finalPageable);
+
+        List<Comment> testList = commentRepository.findByQuestionId(questionId);
+
+        boolean hasAdoptedComment = testList.stream().anyMatch(Comment::isAdopt);
+
         List<CommentDto> dtoList = commentPage.getContent().stream()
                 .map(comment -> {
                     try {
@@ -92,7 +97,7 @@ public class CommentService {
                         throw new RuntimeException(e);
                     }
                 }).collect(Collectors.toList());
-        return new PageResponseDto<>(commentPage, dtoList);
+        return new PageResponseDto<>(commentPage, dtoList, hasAdoptedComment);
     }
 
     // 답변 생성
