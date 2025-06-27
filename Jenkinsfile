@@ -29,7 +29,7 @@ pipeline {
         GIT_URL = "https://github.com/BOKJUNSOO/gorae-post.git"
         GITHUB_CREDENTIAL = "github-token"
         ARTIFACTS = "build/libs/**"
-        DOCKER_REGISTRY = "bokjunsoo"
+        DOCKER_REGISTRY = "ssas"
         DOCKERHUB_CREDENTIAL = 'dockerhub-token'
     }
 
